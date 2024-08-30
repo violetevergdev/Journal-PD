@@ -1,6 +1,6 @@
 
 
-def sizes_allowance_entrys(ttk, frame, entry_font, root):
+def sizes_allowance_entrys(ttk, frame, entry_font, root, show_context_menu):
     frame_size = ttk.LabelFrame(frame, style="data.TLabelframe")
 
     frame_size.grid(row=13, column=0, sticky='ns', columnspan=2, pady=10, padx=10)
@@ -22,6 +22,8 @@ def sizes_allowance_entrys(ttk, frame, entry_font, root):
                               font=entry_font)
     set_size_pens.grid(row=2, column=0)
 
+    set_size_pens.bind("<Button-3>", lambda event, entry=set_size_pens: show_context_menu(frame, event, entry))
+
     # ===========================================Доплата ПЕНС====================================
 
     ttk.Label(frame_size, text='Доплата Пенсии: ', style='data.TLabel').grid(row=1, column=1, pady=5)
@@ -31,12 +33,17 @@ def sizes_allowance_entrys(ttk, frame, entry_font, root):
                                font=entry_font)
     allowance_pens.grid(row=2, column=1)
 
+    allowance_pens.bind("<Button-3>", lambda event, entry=allowance_pens: show_context_menu(frame, event, entry))
+
     # ===========================================УСТ.Размер ЕДВ====================================
 
     ttk.Label(frame_size, text='УСТ.Размер ЕДВ: ', style='data.TLabel').grid(row=3, column=0, pady=5)
     set_size_edv = ttk.Entry(frame_size, font=entry_font, justify='center', validate='all', width=10,
                              validatecommand=vmcd)
     set_size_edv.grid(row=4, column=0)
+
+    set_size_edv.bind("<Button-3>", lambda event, entry=set_size_edv: show_context_menu(frame, event, entry))
+
 
     # ===========================================Доплата ЕДВ====================================
 
@@ -46,6 +53,9 @@ def sizes_allowance_entrys(ttk, frame, entry_font, root):
                               validatecommand=vmcd)
     allowance_edv.grid(row=4, column=1)
 
+    allowance_edv.bind("<Button-3>", lambda event, entry=allowance_edv: show_context_menu(frame, event, entry))
+
+
     # ===========================================УСТ.Размер ДМО====================================
 
     ttk.Label(frame_size, text='УСТ.Размер ДМО: ', style='data.TLabel').grid(row=5, column=0, pady=5)
@@ -53,12 +63,18 @@ def sizes_allowance_entrys(ttk, frame, entry_font, root):
                              validatecommand=vmcd)
     set_size_dmo.grid(row=6, column=0)
 
+    set_size_dmo.bind("<Button-3>", lambda event, entry=set_size_dmo: show_context_menu(frame, event, entry))
+
+
     # ===========================================Доплата ДМО====================================
 
     ttk.Label(frame_size, text='Доплата ДМО: ', style='data.TLabel').grid(row=5, column=1, pady=5)
     allowance_dmo = ttk.Entry(frame_size, font=entry_font, validate='all', justify='center', width=10,
                               validatecommand=vmcd)
     allowance_dmo.grid(row=6, column=1)
+
+    allowance_dmo.bind("<Button-3>", lambda event, entry=allowance_dmo: show_context_menu(frame, event, entry))
+
 
     return (set_size_pens, allowance_pens, set_size_edv,
             allowance_edv, set_size_dmo, allowance_dmo)

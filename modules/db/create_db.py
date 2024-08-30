@@ -15,7 +15,7 @@ create_pfr_db = ('''
                 'Доплата ЕДВ' float,
                 'УСТ. Размер ДМО' float,
                 'Доплата ДМО' float,
-                Банк text NOT NULL,
+                'Доставочная организация' text NOT NULL,
                 'Специалист ОВ' text NOT NULL,
                 Примечание text,
                 'Дата отработки' datetime NOT NULL

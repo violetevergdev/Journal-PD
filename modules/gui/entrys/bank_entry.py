@@ -6,7 +6,7 @@ def bank_entry(ttk, frame, entry_font, bank_data):
     frame_bank = ttk.Frame(frame)
     frame_bank.grid(row=9, column=1)
 
-    ttk.Label(frame, text='*Банк: ', style='data.TLabel').grid(row=9, column=0, pady=5)
+    ttk.Label(frame, text='*Дост. организация: ', style='data.TLabel').grid(row=9, column=0, pady=5)
     selected_bank = ttk.Entry(frame_bank, width=18, justify='center', font=entry_font, state='readonly')
     selected_bank.grid(row=1, column=0)
 

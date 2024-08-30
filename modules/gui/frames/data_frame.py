@@ -51,7 +51,7 @@ def data_frame(root, ttk, tree, type_event="ADD", existing_values=None):
     #  ====Специалист, Примечание, Дата Отработки==========================
     specialist, note, wdate = note_wdate_entrys(ttk, frame, entry_font)
     # ============УСТ.Размеры====================================
-    values = sizes_allowance_entrys(ttk, frame, entry_font, root)
+    values = sizes_allowance_entrys(ttk, frame, entry_font, root, show_context_menu)
 
     # ===========================================КНОПКА ОБРАБОТКИ====================================
     data_entrys = {
@@ -68,7 +68,7 @@ def data_frame(root, ttk, tree, type_event="ADD", existing_values=None):
         'allowance_edv': values[3],
         'set_size_dmo': values[4],
         'allowance_dmo': values[5],
-        'Банк': bank,
+        'Дост. организация': bank,
         'Специалиста ОВ': specialist,
         'Примечание': note,
         'Дата Отработки': wdate,
@@ -81,7 +81,7 @@ def data_frame(root, ttk, tree, type_event="ADD", existing_values=None):
         for el, val in zip(existing_values[1:], data_entrys.items()):
             if val[0] in ('Очередность выплаты', 'Выплатной месяц', '№ Филиала', 'ОПЕРАЦИЮ'):
                 val[1].set(el)
-            elif val[0] == 'Банк':
+            elif val[0] == 'Дост. организация':
                 val[1].config(state='normal')
                 val[1].insert(0, el)
                 val[1].config(state='readonly')

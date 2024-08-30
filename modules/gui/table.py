@@ -34,7 +34,7 @@ def table(root, ttk,):
     tree.column('#12', width=120, stretch=False, minwidth=50, anchor='center')
     tree.column('#13', width=120, stretch=False, minwidth=50, anchor='center')
     tree.column('#14', width=120, stretch=False, minwidth=50, anchor='center')
-    tree.column('#15', width=190, stretch=False, minwidth=50, anchor='center')
+    tree.column('#15', width=220, stretch=False, minwidth=50, anchor='center')
     tree.column('#16', width=190, stretch=False, minwidth=50, anchor='center')
     tree.column('#17', width=140, stretch=False, minwidth=50, anchor='center')
     tree.column('#18', width=140, stretch=False, minwidth=50, anchor='center')

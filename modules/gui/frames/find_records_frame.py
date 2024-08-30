@@ -27,7 +27,7 @@ def find_records_frame(ttk, find_wind, tree, messagebox):
         except Exception as e:
             messagebox.showerror("Ошибка!", e)
 
-    col = ["СНИЛС", "ФИО Пенсионера", "Специалист ОВ", "Район", "Очередность выплаты", "Выплатной месяц"]
+    col = ["СНИЛС", "ФИО Пенсионера", "Специалист ОВ", "№ Филиала", "Район", "Доставочная организация", "Очередность выплаты", "Выплатной месяц"]
 
     frame = ttk.LabelFrame(find_wind, text="Поиск", style="data.TLabelframe")
     frame.grid(row=0, column=2, rowspan=2, sticky='ns', pady=20, padx=20)

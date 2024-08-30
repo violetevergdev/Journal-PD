@@ -2,7 +2,7 @@
 def priority_mounth_filial_frames(ttk, frame, entry_font):
 
     # ================Очередность выплаты====================================
-    priority = ['Основная', 'Разовая', 'Доп.  1', 'Доп. 2', 'Доп. 3']
+    priority = ['Основная', 'Доп.  1', 'Разовая 1', 'Разовая 2', 'Разовая 3', 'Разовая 4', 'Разовая 5', 'Разовая 6']
 
     ttk.Label(frame, text='*Очередность выплаты: ', style='data.TLabel').grid(row=2, column=0, pady=5)
     payment_priority = ttk.Combobox(frame, values=priority, justify='center', width=15, font=entry_font,

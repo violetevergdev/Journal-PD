@@ -17,6 +17,12 @@ def add_data_btn(ttk, root, frame, data_entrys, error, tree, type_event, id_el=N
         return param
 
     def validate_data():
+        non_empty_sizes = [data_entrys[key] for key in ['set_size_pens', 'set_size_edv', 'set_size_dmo'] if
+                                              data_entrys[key].get() != ""]
+        if not non_empty_sizes:
+           error.config(text="Ошибка! Укажите хотя бы один\nиз размеров пенсии, ЕДВ или ДМО")
+           return False
+
         for k, v in data_entrys.items():
             if k == 'Примечание' or any(c in 'sa' for c in k):
                 continue
@@ -62,7 +68,7 @@ def add_data_btn(ttk, root, frame, data_entrys, error, tree, type_event, id_el=N
         for k, v in data_entrys.items():
             if k in ('№ Филиала', 'ОПЕРАЦИЮ'):
                 v.set("")
-            elif k == 'Банк':
+            elif k == 'Дост. организация':
                 v.config(state='normal')
                 v.delete(0, 'end')
                 v.config(state='readonly')
@@ -89,7 +95,7 @@ def add_data_btn(ttk, root, frame, data_entrys, error, tree, type_event, id_el=N
                     query = f'''UPDATE pfr SET 'Очередность выплаты' = ?, 'Выплатной месяц' = ?, '№ Филиала' = ?,
                      Район = ?, СНИЛС = ?, 'ФИО Пенсионера' = ?, Операция = ?, 'УСТ. Размер пенсии' = ?, 
                      'Доплата ПЕНС' = ?, 'УСТ. Размер ЕДВ' = ?, 'Доплата ЕДВ' = ?, 'УСТ. Размер ДМО' = ?, 
-                    'Доплата ДМО' = ?, Банк = ?, 'Специалист ОВ' = ?, Примечание = ?, 'Дата отработки' = ? 
+                    'Доплата ДМО' = ?, 'Доставочная организация' = ?, 'Специалист ОВ' = ?, Примечание = ?, 'Дата отработки' = ? 
                     WHERE id = {id_el}'''
                 parameters = get_parameters()
                 run_query(query, parameters)
