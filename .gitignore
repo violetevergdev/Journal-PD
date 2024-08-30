@@ -2,9 +2,8 @@
 /build/
 /dist/
 .idea
-modules/gui/__pycache__/
-modules/gui/optionally/__pycache__/
+/clear-bg.png
+
 modules/db/__pycache__/
-modules/gui/buttons/__pycache__/
-modules/gui/entrys/__pycache__/
-modules/gui/frames/__pycache__/
+modules/gui/window/__pycache__/
+modules/optionally/__pycache__/

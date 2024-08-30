@@ -1,0 +1,965 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>NewRecord</class>
+ <widget class="QDialog" name="NewRecord">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>504</width>
+    <height>776</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Новая запись</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: #93a5a7;
+
+font-family: Calibri;
+font-size: 20px;
+</string>
+  </property>
+  <widget class="QLabel" name="label_new_record">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>10</y>
+     <width>131</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Calibri</family>
+     <pointsize>-1</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: white;
+</string>
+   </property>
+   <property name="text">
+    <string>Новая запись</string>
+   </property>
+  </widget>
+  <widget class="QFrame" name="main_frame">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>40</y>
+     <width>451</width>
+     <height>711</height>
+    </rect>
+   </property>
+   <property name="cursor">
+    <cursorShape>ArrowCursor</cursorShape>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QFrame {
+	border: 1px solid white;
+	font-family: Calibri;
+	font-size: 20px;
+}
+
+QComboBox {
+	background-color: white;
+	font-family: Calibri;
+	font-size: 20px;
+}
+
+QListView {
+	background-color:white;
+}
+
+QLineEdit {
+	background-color:white;
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Raised</enum>
+   </property>
+   <widget class="QFrame" name="sizes_frame">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>420</y>
+      <width>371</width>
+      <height>211</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QWidget" name="">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>40</y>
+       <width>301</width>
+       <height>32</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="spacing">
+       <number>45</number>
+      </property>
+      <item>
+       <widget class="QLineEdit" name="allow_Pens">
+        <property name="font">
+         <font>
+          <family>Calibri</family>
+          <pointsize>-1</pointsize>
+         </font>
+        </property>
+        <property name="inputMethodHints">
+         <set>Qt::ImhNone</set>
+        </property>
+        <property name="maxLength">
+         <number>32767</number>
+        </property>
+        <property name="cursorPosition">
+         <number>0</number>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="size_Pens">
+        <property name="font">
+         <font>
+          <family>Calibri</family>
+          <pointsize>-1</pointsize>
+         </font>
+        </property>
+        <property name="inputMethodHints">
+         <set>Qt::ImhNone</set>
+        </property>
+        <property name="maxLength">
+         <number>32767</number>
+        </property>
+        <property name="cursorPosition">
+         <number>0</number>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>10</y>
+       <width>338</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <property name="spacing">
+       <number>20</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="L_sizePens">
+        <property name="styleSheet">
+         <string notr="true">border:none</string>
+        </property>
+        <property name="text">
+         <string>Уст. Размер Пенсии:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="L_allowPens">
+        <property name="styleSheet">
+         <string notr="true">border:none</string>
+        </property>
+        <property name="text">
+         <string>Доплата Пенсии:</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>70</y>
+       <width>305</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <property name="spacing">
+       <number>45</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="L_sizeEDV">
+        <property name="styleSheet">
+         <string notr="true">border:none</string>
+        </property>
+        <property name="text">
+         <string>Уст. Размер ЕДВ:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="L_allowEDV">
+        <property name="styleSheet">
+         <string notr="true">border:none</string>
+        </property>
+        <property name="text">
+         <string>Доплата ЕДВ:</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>100</y>
+       <width>301</width>
+       <height>32</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_4">
+      <property name="spacing">
+       <number>45</number>
+      </property>
+      <item>
+       <widget class="QLineEdit" name="size_EDV">
+        <property name="font">
+         <font>
+          <family>Calibri</family>
+          <pointsize>-1</pointsize>
+         </font>
+        </property>
+        <property name="inputMethodHints">
+         <set>Qt::ImhNone</set>
+        </property>
+        <property name="maxLength">
+         <number>32767</number>
+        </property>
+        <property name="cursorPosition">
+         <number>0</number>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="allow_EDV">
+        <property name="font">
+         <font>
+          <family>Calibri</family>
+          <pointsize>-1</pointsize>
+         </font>
+        </property>
+        <property name="inputMethodHints">
+         <set>Qt::ImhNone</set>
+        </property>
+        <property name="maxLength">
+         <number>32767</number>
+        </property>
+        <property name="cursorPosition">
+         <number>0</number>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>130</y>
+       <width>323</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_5">
+      <property name="spacing">
+       <number>45</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="L_sizeDMO">
+        <property name="styleSheet">
+         <string notr="true">border:none</string>
+        </property>
+        <property name="text">
+         <string>Уст. Размер ДМО:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="L_allowDMO">
+        <property name="styleSheet">
+         <string notr="true">border:none</string>
+        </property>
+        <property name="text">
+         <string>Доплата ДМО:</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>160</y>
+       <width>301</width>
+       <height>32</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_6">
+      <property name="spacing">
+       <number>45</number>
+      </property>
+      <item>
+       <widget class="QLineEdit" name="size_DMO">
+        <property name="font">
+         <font>
+          <family>Calibri</family>
+          <pointsize>-1</pointsize>
+         </font>
+        </property>
+        <property name="inputMethodHints">
+         <set>Qt::ImhNone</set>
+        </property>
+        <property name="maxLength">
+         <number>32767</number>
+        </property>
+        <property name="cursorPosition">
+         <number>0</number>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="allow_DMO">
+        <property name="font">
+         <font>
+          <family>Calibri</family>
+          <pointsize>-1</pointsize>
+         </font>
+        </property>
+        <property name="inputMethodHints">
+         <set>Qt::ImhNone</set>
+        </property>
+        <property name="maxLength">
+         <number>32767</number>
+        </property>
+        <property name="cursorPosition">
+         <number>0</number>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>650</y>
+      <width>401</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+	border: 1px solid white;
+}
+
+QPushButton:hover {
+	border: 2px solid white;
+}
+
+QPushButton:pressed {
+	border: 1px solid white;
+	background-color: rgba(255, 255, 255, 50)
+}</string>
+    </property>
+    <property name="text">
+     <string>Сохранить</string>
+    </property>
+   </widget>
+   <widget class="QWidget" name="layoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>12</y>
+      <width>433</width>
+      <height>387</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="main_grid">
+     <item row="0" column="0" colspan="2">
+      <widget class="QLabel" name="L_priority">
+       <property name="styleSheet">
+        <string notr="true">border:none</string>
+       </property>
+       <property name="text">
+        <string>*Очередность выплаты:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QComboBox" name="priority">
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="autoFillBackground">
+        <bool>false</bool>
+       </property>
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+       <property name="currentText">
+        <string>Основная</string>
+       </property>
+       <property name="maxVisibleItems">
+        <number>103453556</number>
+       </property>
+       <property name="frame">
+        <bool>true</bool>
+       </property>
+       <item>
+        <property name="text">
+         <string>Основная</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Разовая</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Доп. 1</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Доп. 2</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Доп. 3</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="L_mounth">
+       <property name="styleSheet">
+        <string notr="true">border:none</string>
+       </property>
+       <property name="text">
+        <string>*Выплатной месяц:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2" rowspan="2">
+      <widget class="QComboBox" name="mounth">
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="autoFillBackground">
+        <bool>false</bool>
+       </property>
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+       <property name="currentText">
+        <string>Январь</string>
+       </property>
+       <property name="maxVisibleItems">
+        <number>103453556</number>
+       </property>
+       <property name="frame">
+        <bool>true</bool>
+       </property>
+       <item>
+        <property name="text">
+         <string>Январь</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Февраль</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Март</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Апрель</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Май</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Июнь</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Июль</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Август</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Сентябрь</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Октябрь</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Ноябрь</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Декабрь</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="2" column="0" rowspan="2">
+      <widget class="QLabel" name="L_filial">
+       <property name="styleSheet">
+        <string notr="true">border:none</string>
+       </property>
+       <property name="text">
+        <string>*№ Филиала:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="2">
+      <widget class="QComboBox" name="filial">
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="autoFillBackground">
+        <bool>false</bool>
+       </property>
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+       <property name="editable">
+        <bool>false</bool>
+       </property>
+       <property name="currentText">
+        <string>Ф-л 1</string>
+       </property>
+       <property name="maxVisibleItems">
+        <number>103453556</number>
+       </property>
+       <property name="frame">
+        <bool>true</bool>
+       </property>
+       <item>
+        <property name="text">
+         <string>Ф-л 1</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Ф-л 2</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Ф-л 3</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Ф-л 4</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Ф-л 5</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Ф-л 6</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Ф-л 7</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Ф-л 8</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Ф-л 9</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Ф-л 10</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="L_district">
+       <property name="styleSheet">
+        <string notr="true">border:none</string>
+       </property>
+       <property name="text">
+        <string>*Район:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="2">
+      <widget class="QLineEdit" name="district">
+       <property name="font">
+        <font>
+         <family>Calibri</family>
+         <pointsize>-1</pointsize>
+        </font>
+       </property>
+       <property name="inputMethodHints">
+        <set>Qt::ImhNone</set>
+       </property>
+       <property name="maxLength">
+        <number>3</number>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="L_snils">
+       <property name="styleSheet">
+        <string notr="true">border:none</string>
+       </property>
+       <property name="text">
+        <string>*СНИЛС:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QLabel" name="L_FIO">
+       <property name="styleSheet">
+        <string notr="true">border:none</string>
+       </property>
+       <property name="text">
+        <string>*ФИО ПЕНСИОНЕРА:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="0">
+      <widget class="QLabel" name="L_operation">
+       <property name="styleSheet">
+        <string notr="true">border:none</string>
+       </property>
+       <property name="text">
+        <string>*Операция:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="2">
+      <widget class="QComboBox" name="operation_type">
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="autoFillBackground">
+        <bool>false</bool>
+       </property>
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+       <property name="editable">
+        <bool>false</bool>
+       </property>
+       <property name="currentText">
+        <string>Назначение</string>
+       </property>
+       <property name="maxVisibleItems">
+        <number>103453556</number>
+       </property>
+       <property name="frame">
+        <bool>true</bool>
+       </property>
+       <item>
+        <property name="text">
+         <string>Назначение</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Постановка</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Перерасчет</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="8" column="0">
+      <widget class="QLabel" name="L_bank">
+       <property name="styleSheet">
+        <string notr="true">border:none</string>
+       </property>
+       <property name="text">
+        <string>*Дост. организация:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="3">
+      <widget class="QToolButton" name="add_bank">
+       <property name="text">
+        <string>+</string>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="0">
+      <widget class="QLabel" name="L_specialist">
+       <property name="styleSheet">
+        <string notr="true">border:none</string>
+       </property>
+       <property name="text">
+        <string>*Специалист О.В.:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="10" column="0">
+      <widget class="QLabel" name="L_note">
+       <property name="styleSheet">
+        <string notr="true">border:none</string>
+       </property>
+       <property name="text">
+        <string>Примечание:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="11" column="0">
+      <widget class="QLabel" name="L_wdate">
+       <property name="styleSheet">
+        <string notr="true">border:none</string>
+       </property>
+       <property name="text">
+        <string>*Дата отработки:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="11" column="2">
+      <widget class="QDateEdit" name="wdate">
+       <property name="styleSheet">
+        <string notr="true">QDateEdit {
+	background-color: white;
+}
+
+</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+       <property name="minimumDateTime">
+        <datetime>
+         <hour>0</hour>
+         <minute>0</minute>
+         <second>0</second>
+         <year>2020</year>
+         <month>9</month>
+         <day>14</day>
+        </datetime>
+       </property>
+       <property name="currentSection">
+        <enum>QDateTimeEdit::DaySection</enum>
+       </property>
+       <property name="calendarPopup">
+        <bool>true</bool>
+       </property>
+       <property name="date">
+        <date>
+         <year>2024</year>
+         <month>8</month>
+         <day>14</day>
+        </date>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="2">
+      <widget class="QLineEdit" name="snils">
+       <property name="font">
+        <font>
+         <family>Calibri</family>
+         <pointsize>-1</pointsize>
+        </font>
+       </property>
+       <property name="inputMethodHints">
+        <set>Qt::ImhNone</set>
+       </property>
+       <property name="inputMask">
+        <string>XXX-XXX-XXX XX</string>
+       </property>
+       <property name="text">
+        <string>----- </string>
+       </property>
+       <property name="maxLength">
+        <number>14</number>
+       </property>
+       <property name="cursorPosition">
+        <number>14</number>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+       <property name="placeholderText">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="2">
+      <widget class="QLineEdit" name="fio_pens">
+       <property name="font">
+        <font>
+         <family>Calibri</family>
+         <pointsize>-1</pointsize>
+        </font>
+       </property>
+       <property name="inputMethodHints">
+        <set>Qt::ImhNone</set>
+       </property>
+       <property name="maxLength">
+        <number>32767</number>
+       </property>
+       <property name="cursorPosition">
+        <number>0</number>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+       <property name="placeholderText">
+        <string>Фамилия И.О.</string>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="2">
+      <widget class="QLineEdit" name="bank">
+       <property name="font">
+        <font>
+         <family>Calibri</family>
+         <pointsize>-1</pointsize>
+        </font>
+       </property>
+       <property name="inputMethodHints">
+        <set>Qt::ImhNone</set>
+       </property>
+       <property name="maxLength">
+        <number>32767</number>
+       </property>
+       <property name="cursorPosition">
+        <number>0</number>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="2">
+      <widget class="QLineEdit" name="specialist">
+       <property name="font">
+        <font>
+         <family>Calibri</family>
+         <pointsize>-1</pointsize>
+        </font>
+       </property>
+       <property name="inputMethodHints">
+        <set>Qt::ImhNone</set>
+       </property>
+       <property name="maxLength">
+        <number>32767</number>
+       </property>
+       <property name="cursorPosition">
+        <number>0</number>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="10" column="2">
+      <widget class="QLineEdit" name="note">
+       <property name="font">
+        <font>
+         <family>Calibri</family>
+         <pointsize>-1</pointsize>
+        </font>
+       </property>
+       <property name="inputMethodHints">
+        <set>Qt::ImhNone</set>
+       </property>
+       <property name="maxLength">
+        <number>32767</number>
+       </property>
+       <property name="cursorPosition">
+        <number>0</number>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

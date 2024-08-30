@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Find_MainWindow</class>
+ <widget class="QDialog" name="Find_MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>548</width>
+    <height>176</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Поиск</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QDialog {
+  background-color: #93a5a7;
+}</string>
+  </property>
+  <widget class="QFrame" name="frame">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>50</y>
+     <width>491</width>
+     <height>101</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QFrame {
+	border: 1px solid white;
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Raised</enum>
+   </property>
+   <widget class="QLineEdit" name="lineEdit">
+    <property name="geometry">
+     <rect>
+      <x>21</x>
+      <y>21</y>
+      <width>201</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLineEdit {
+	font-size: 20px;
+	font-family: 'Calibri';
+}</string>
+    </property>
+    <property name="placeholderText">
+     <string>Ввод</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="comboBox">
+    <property name="geometry">
+     <rect>
+      <x>240</x>
+      <y>21</y>
+      <width>231</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QComboBox {
+	font-size: 18px;
+	font-family:'Calibri';
+}</string>
+    </property>
+    <item>
+     <property name="text">
+      <string>СНИЛС</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>ФИО  Пенсионера</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Специалист ОВ</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>№ Филиала</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Район</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Доставочная организация</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Очередность выплаты</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Выплатной месяц</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>60</y>
+      <width>111</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+	background-color: #93a5a7;
+	border: 1px solid white;
+	font-size: 18px;
+	font-family: 'Calibri';
+}
+
+QPushButton:hover {
+	background-color:#a8b7b8;
+}
+
+QPushButton:pressed {
+	background-color: #bec9ca;
+}</string>
+    </property>
+    <property name="text">
+     <string>Найти</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>20</y>
+     <width>91</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLabel {
+	font-size: 20px;
+	font-family: 'Calibri';
+	color: white;
+}</string>
+   </property>
+   <property name="text">
+    <string>Поиск</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
