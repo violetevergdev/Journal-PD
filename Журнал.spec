@@ -17,7 +17,7 @@ a = Analysis(
 pyz = PYZ(a.pure)
 
 splash = Splash(
-    'C:\Violet\DEV_PROJ\JournalPD_PySide\screen.png',
+    'screen.png',
     text_color='white',
     binaries=a.binaries,
     datas=a.datas,

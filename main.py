@@ -14,6 +14,7 @@ from PyQt5.QtWidgets import QInputDialog, QMessageBox
 from modules.gui.window.new_record import Ui_NewRecord
 from modules.gui.window.find_wind import Ui_Find_MainWindow
 from modules.db.db_connection import Database
+from modules.optionally.clear_fields import clear_fields
 from modules.optionally.delegates import TableItemDelegate
 from modules.optionally.get_entry_data import get_entry_data
 from modules.optionally.validate_data import validate_data
@@ -90,19 +91,21 @@ class Journal(QMainWindow, Ui_MainWindow):
         data = get_entry_data(self)
 
         if validate_data(self, data):
-            self.db.connect()
             if type_operation == 'Добавить':
-                self.db.add_new_record(data)
-                self.logger.info(f'\n[ADD] {str(datetime.today().strftime("%Y-%m-%d %H:%M:%S"))} - Запись успешно добавлена '
-                                 f'пользователем {self.user}, данные записи: {data}')
+                if self.db.add_new_record(self.logger, self.user, data):
+                    self.logger.info(
+                        f'\n[ADD] {str(datetime.today().strftime("%Y-%m-%d %H:%M:%S"))} - Запись успешно добавлена '
+                        f'пользователем {self.user}, данные записи: {data}')
+                    clear_fields(self)
+
             if type_operation == 'Изменить':
-                self.db.update_record(data, self.edit_id)
-                self.logger.info(
-                    f'\n[EDIT] {str(datetime.today().strftime("%Y-%m-%d %H:%M:%S"))} - Запись успешно изменена '
-                    f'пользователем {self.user}, данные записи: {data}')
+                if self.db.update_record(self.logger, self.user, data, self.edit_id):
+                    self.logger.info(
+                        f'\n[EDIT] {str(datetime.today().strftime("%Y-%m-%d %H:%M:%S"))} - Запись успешно изменена '
+                        f'пользователем {self.user}, данные записи: {data}')
+                    self.new_window.close()
+                    QMessageBox.information(self, 'Успех', 'Запись была успешно изменена')
             self.view_data()
-            self.db.disconnect()
-            self.new_window.close()
         else:
             self.new_window.activateWindow()
 
@@ -117,15 +120,13 @@ class Journal(QMainWindow, Ui_MainWindow):
                     fio_pens = str(self.ui.table.model().data(row[6]))
                     specialist = str(self.ui.table.model().data(row[15]))
 
-                    self.db.connect()
-                    self.db.delete_record(id)
-                    self.logger.info(
-                        f'\n[DELETE] {str(datetime.today().strftime("%Y-%m-%d %H:%M:%S"))} - Запись успешно удалена '
-                        f'пользователем {self.user}, данные записи: СНИЛС - {snils}, '
-                        f'ФИО Пенсионера - {fio_pens}, Специалист - {specialist}')
-                    self.view_data()
-                    self.db.disconnect()
-                    QMessageBox.information(self, 'Успех', 'Запись была успешно удалена')
+                    if self.db.delete_record(self.logger, self.user, id):
+                        self.logger.info(
+                            f'\n[DELETE] {str(datetime.today().strftime("%Y-%m-%d %H:%M:%S"))} - Запись успешно удалена '
+                            f'пользователем {self.user}, данные записи: СНИЛС - {snils}, '
+                            f'ФИО Пенсионера - {fio_pens}, Специалист - {specialist}')
+                        self.view_data()
+                        QMessageBox.information(self, 'Успех', 'Запись была успешно удалена')
                 else:
                     QMessageBox.critical(self, 'Ошибка', 'Неправильный пароль')
         else:
@@ -201,15 +202,15 @@ class Journal(QMainWindow, Ui_MainWindow):
 
         if selected_column:
             self.db.connect()
-            query = self.db.find_records(selected_column, value)
+            query = self.db.find_records(self.logger, self.user, selected_column, value)
 
-            self.model = QSqlQueryModel()
             self.model.setQuery(query)
 
             if self.model.lastError().isValid():
                 print("Ошибка при выборке данных:", self.model.lastError().text())
             else:
                 self.ui.table.setModel(self.model)
+            self.db.disconnect()
 
 
 

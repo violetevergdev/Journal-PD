@@ -40,9 +40,9 @@ class Ui_Dialog(object):
 
         # Заполянем лист данными из БД
         self.db = Database(self)
-        self.db.connect()
-        self.item_list = self.db.get_banks()
-        self.db.disconnect()
+
+        self.item_list = self.db.get_banks(self.logger, self.user)
+
         self.model = QtCore.QStringListModel(self.item_list, self.banks_list)
         self.banks_list.setModel(self.model)
 
@@ -94,13 +94,12 @@ class Ui_Dialog(object):
                 QMessageBox.critical(None, "Ошибка", 'Такой банк уже существует!')
                 return
             try:
-                self.db.connect()
-                self.db.add_bank(new_bank)
-                self.logger.info(f'\n[NEW_BANK] {str(datetime.today().strftime("%Y-%m-%d %H:%M:%S"))} - Банк {new_bank} успешно добавлен пользователем {self.user}')
-                self.item_list = self.db.get_banks()
-                self.db.disconnect()
-                self.model = QtCore.QStringListModel(self.item_list, self.banks_list)
-                self.banks_list.setModel(self.model)
+                if self.db.add_bank(self.logger, self.user, new_bank):
+                    self.logger.info(
+                        f'\n[NEW_BANK] {str(datetime.today().strftime("%Y-%m-%d %H:%M:%S"))} - Банк {new_bank} успешно добавлен пользователем {self.user}')
+                    self.item_list = self.db.get_banks(self.logger, self.user)
+                    self.model = QtCore.QStringListModel(self.item_list, self.banks_list)
+                    self.banks_list.setModel(self.model)
             except Exception:
                 QMessageBox.critical(None, "Ошибка", 'Такой банк уже существует!')
 

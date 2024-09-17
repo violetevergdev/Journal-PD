@@ -1,0 +1,15 @@
+
+def clear_fields(self):
+    self.ui_window.filial.setCurrentIndex(-1)
+    self.ui_window.district.setText("")
+    self.ui_window.snils.setText("")
+    self.ui_window.fio_pens.setText("")
+    self.ui_window.operation_type.setCurrentIndex(-1)
+    self.ui_window.size_Pens.setText("")
+    self.ui_window.allow_Pens.setText("")
+    self.ui_window.size_EDV.setText("")
+    self.ui_window.allow_EDV.setText("")
+    self.ui_window.size_DMO.setText("")
+    self.ui_window.allow_DMO.setText("")
+    self.ui_window.bank.setText("")
+    self.ui_window.note.setText("")
