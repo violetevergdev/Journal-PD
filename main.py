@@ -5,7 +5,6 @@ import ctypes
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import *
-from PyQt5.QtSql import QSqlTableModel, QSqlQueryModel
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from modules.gui.window.ui_main import Ui_MainWindow
@@ -33,6 +32,7 @@ class Journal(QMainWindow, Ui_MainWindow):
 
         self.db = Database(self)
         self._CP = '4525'
+        self._UNLOADP = '2322'
         self.logger = logging_db()
         self.user = os.getlogin()
         self.view_data()
@@ -41,19 +41,15 @@ class Journal(QMainWindow, Ui_MainWindow):
         self.ui.edit_btn.clicked.connect(self.edit_record)
 
     def view_data(self):
-        self.db.connect()
+        self.model = QStandardItemModel(self)
 
-        self.model = QSqlTableModel(self)
-        self.model.setTable('pfr')
+        query, cursor = self.db.get_all_records(self.logger, self.user)
 
-
-        if not self.model.select():
-            print("Ошибка при выборке данных:", self.model.lastError().text())
-        else:
-
-            while self.model.canFetchMore():
-                self.model.fetchMore()
-            # Добавляем данные в таблицу
+        if query:
+            self.model.setHorizontalHeaderLabels([col[0] for col in cursor.description])
+            for row_data in query:
+                items = [QStandardItem(str(field)) for field in row_data]
+                self.model.appendRow(items)
             self.ui.table.setModel(self.model)
 
             # Центрируем текст ячеек по центру и приводим числовые значения в порядок
@@ -74,8 +70,8 @@ class Journal(QMainWindow, Ui_MainWindow):
 
             # Отключаем редактирвоание данных двойным нажатием
             self.ui.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
-
-        self.db.disconnect()
+        else:
+            QMessageBox.critical(self, 'Ошибка', 'Ошибка при прочтении базы данных')
 
     def open_new_record_window(self):
         self.new_window = QtWidgets.QDialog()
@@ -181,12 +177,21 @@ class Journal(QMainWindow, Ui_MainWindow):
             QMessageBox.warning(self, "Внимание", "Выберите запись")
 
     def unload_XLSX_records(self):
-        try:
-            unload_XLSX_data()
-            self.logger.info(f'\n[UNLOAD] {str(datetime.today().strftime("%Y-%m-%d %H:%M:%S"))} - Таблица успешно '
-                             f'выгружена пользователем {self.user}')
-        except Exception as e:
-            print(e)
+        password, ok = QInputDialog.getText(self, 'Подтверждение прав', 'Введите пароль:')
+        if ok:
+            if password == self._UNLOADP:
+                try:
+                    data, cursor = self.db.get_all_records(self.logger, self.user)
+                    if data:
+                        unload_XLSX_data(data, cursor)
+                        self.logger.info(
+                            f'\n[UNLOAD] {str(datetime.today().strftime("%Y-%m-%d %H:%M:%S"))} - Таблица успешно '
+                            f'выгружена пользователем {self.user}')
+                        QMessageBox.information(None, "Выгрузка в XLSX", "Данные успешно выгружены")
+                except Exception as e:
+                    print(e)
+            else:
+                QMessageBox.critical(self, 'Ошибка', 'Неправильный пароль')
 
     def open_find_window(self):
         self.find_window = QtWidgets.QDialog()
@@ -201,16 +206,18 @@ class Journal(QMainWindow, Ui_MainWindow):
         value = self.ui_find_window.lineEdit.text()
 
         if selected_column:
-            self.db.connect()
-            query = self.db.find_records(self.logger, self.user, selected_column, value)
+            query, cursor = self.db.find_records(self.logger, self.user, selected_column, value)
 
-            self.model.setQuery(query)
+            self.model = QStandardItemModel(self)
 
-            if self.model.lastError().isValid():
-                print("Ошибка при выборке данных:", self.model.lastError().text())
-            else:
+            if query:
+                self.model.setHorizontalHeaderLabels([col[0] for col in cursor.description])
+                for row_data in query:
+                    items = [QStandardItem(str(field)) for field in row_data]
+                    self.model.appendRow(items)
                 self.ui.table.setModel(self.model)
-            self.db.disconnect()
+            else:
+                QMessageBox.information(self, 'Записей нет', 'Запись не была найдена')
 
 
 

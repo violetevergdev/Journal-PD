@@ -93,14 +93,14 @@ class Ui_Dialog(object):
             if new_bank in ('СБЕРБАНК', 'СБЕР', '9038', '9040', 'ПАО СБЕРБАНК', 'ВТБ'):
                 QMessageBox.critical(None, "Ошибка", 'Такой банк уже существует!')
                 return
-            try:
-                if self.db.add_bank(self.logger, self.user, new_bank):
-                    self.logger.info(
-                        f'\n[NEW_BANK] {str(datetime.today().strftime("%Y-%m-%d %H:%M:%S"))} - Банк {new_bank} успешно добавлен пользователем {self.user}')
-                    self.item_list = self.db.get_banks(self.logger, self.user)
-                    self.model = QtCore.QStringListModel(self.item_list, self.banks_list)
-                    self.banks_list.setModel(self.model)
-            except Exception:
+
+            if self.db.add_bank(self.logger, self.user, new_bank):
+                self.logger.info(
+                    f'\n[NEW_BANK] {str(datetime.today().strftime("%Y-%m-%d %H:%M:%S"))} - Банк {new_bank} успешно добавлен пользователем {self.user}')
+                self.item_list = self.db.get_banks(self.logger, self.user)
+                self.model = QtCore.QStringListModel(self.item_list, self.banks_list)
+                self.banks_list.setModel(self.model)
+            else:
                 QMessageBox.critical(None, "Ошибка", 'Такой банк уже существует!')
 
 

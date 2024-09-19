@@ -1,20 +1,14 @@
-from PyQt5.QtWidgets import QFileDialog, QMessageBox
+from PyQt5.QtWidgets import QFileDialog
 
 import os
-import sqlite3
 import pandas as pd
 from datetime import datetime
 
 
-def unload_XLSX_data():
-    # with sqlite3.connect('pfr.db') as conn:
-    with sqlite3.connect('W:\\!VIOLETTA!\\!fw!\\journal\\journal.db') as conn:
-        cursor = conn.cursor()
-
-    query = cursor.execute('SELECT * FROM pfr')
+def unload_XLSX_data(data, cursor):
 
     # Получаем DataFrame
-    results = pd.DataFrame(query, columns=[col[0] for col in cursor.description])
+    results = pd.DataFrame(data, columns=[col[0] for col in cursor.description])
 
     # Запрашиваем выходной путь
     out_dir = str(QFileDialog.getExistingDirectory(None, "Выберите каталог"))
@@ -27,5 +21,3 @@ def unload_XLSX_data():
     results.to_excel(writer, index=False)
 
     writer.close()
-
-    QMessageBox.information(None, "Выгрузка в XLSX", "Данные успешно выгружены")
