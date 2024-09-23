@@ -1,9 +1,9 @@
-import copy
 import sqlite3
 from datetime import datetime
 
 from PyQt5.QtWidgets import QMessageBox
 
+from configuration.config import settings as conf
 
 class Database:
     def __init__(self, parent):
@@ -14,8 +14,7 @@ class Database:
 
     def run_query(self, sql_query, logger, user, parameters=()):
         try:
-            self.conn = sqlite3.connect('W:\\!VIOLETTA!\\!fw!\\journal\\journal.db')
-            # self.conn = sqlite3.connect('pfr.db')
+            self.conn = sqlite3.connect(conf.db_path)
             self.curs = self.conn.cursor()
             result = self.curs.execute(sql_query, parameters)
             self.conn.commit()
@@ -27,6 +26,22 @@ class Database:
                 f'\n[ERR-QUERY] {str(datetime.today().strftime("%Y-%m-%d %H:%M:%S"))} - Ошибка при выполнении запроса, '
                 f'пользователь {user}, данные записи: {parameters}\nОШИБКА:{e}')
             return None
+
+    def get_data_for_view(self, logger, user):
+        try:
+            sql_query = 'SELECT * FROM pfr ORDER BY id DESC LIMIT 5000'
+            result, cursor = self.run_query(sql_query, logger, user)
+            if result is None:
+                return False
+            else:
+                data_list = [name for name in result]
+                return data_list, cursor
+        except Exception:
+            return False
+        finally:
+            if self.conn is not None:
+                self.conn.close()
+                self.conn = None
 
     def get_all_records(self, logger, user):
         try:

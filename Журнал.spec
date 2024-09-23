@@ -5,7 +5,7 @@ a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[],
-    datas=[('icon.ico', '.')],
+    datas=[('icon.ico', '.'), ('.env', '.')],
     hiddenimports=['babel.numbers'],
     hookspath=[],
     hooksconfig={},

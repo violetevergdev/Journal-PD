@@ -1,9 +1,8 @@
 import logging
-
+from configuration.config import settings as conf
 
 def logging_db():
-    file_handler = logging.FileHandler('W:\\!VIOLETTA!\\!fw!\\journal\\db_log.txt')
-    # file_handler = logging.FileHandler('db_log.txt')
+    file_handler = logging.FileHandler(conf.logger_path)
 
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.INFO)

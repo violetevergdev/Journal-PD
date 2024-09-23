@@ -10,6 +10,8 @@ from PyQt5.QtGui import *
 from modules.gui.window.ui_main import Ui_MainWindow
 from PyQt5.QtWidgets import QInputDialog, QMessageBox
 
+from configuration.config import settings as conf
+
 from modules.gui.window.new_record import Ui_NewRecord
 from modules.gui.window.find_wind import Ui_Find_MainWindow
 from modules.db.db_connection import Database
@@ -31,8 +33,8 @@ class Journal(QMainWindow, Ui_MainWindow):
         self.ui.findAction.triggered.connect(self.open_find_window)
 
         self.db = Database(self)
-        self._CP = '4525'
-        self._UNLOADP = '2322'
+        self._CP = conf.CP
+        self._UNLOADP = conf.UNP
         self.logger = logging_db()
         self.user = os.getlogin()
         self.view_data()
@@ -43,9 +45,9 @@ class Journal(QMainWindow, Ui_MainWindow):
     def view_data(self):
         self.model = QStandardItemModel(self)
 
-        query, cursor = self.db.get_all_records(self.logger, self.user)
+        query, cursor = self.db.get_data_for_view(self.logger, self.user)
 
-        if query:
+        if query or query == []:
             self.model.setHorizontalHeaderLabels([col[0] for col in cursor.description])
             for row_data in query:
                 items = [QStandardItem(str(field)) for field in row_data]
@@ -222,15 +224,19 @@ class Journal(QMainWindow, Ui_MainWindow):
 
 
 if __name__ == '__main__':
-    import pyi_splash
-    pyi_splash.close()
+    if conf.ENV_FOR_DYNACONF == 'prod':
+        import pyi_splash
+        pyi_splash.close()
 
     myappid = 'mycompany.myproduct.subproduct.version'
     ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
     app = QApplication(sys.argv)
-    db_path = os.path.join(sys._MEIPASS, 'icon.ico')
-    app.setWindowIcon(QIcon(db_path))
+
+    if conf.ENV_FOR_DYNACONF == 'prod':
+        db_path = os.path.join(sys._MEIPASS, 'icon.ico')
+        app.setWindowIcon(QIcon(db_path))
+
     main = Journal()
 
     main.show()

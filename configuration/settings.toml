@@ -1,0 +1,11 @@
+[default]
+CP = '4525'
+UNP = '2322'
+
+[dev]
+logger_path = 'db_log.txt'
+db_path = 'pfr.db'
+
+[prod]
+logger_path = 'W:\\!VIOLETTA!\\!fw!\\journal\\db_log.txt'
+db_path = 'W:\\!VIOLETTA!\\!fw!\\journal\\journal.db'
