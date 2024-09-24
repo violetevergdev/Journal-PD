@@ -114,7 +114,7 @@ class Database:
             query_bank = 'SELECT * FROM banks'
             result_bank, _ = self.run_query(query_bank, logger, user)
 
-            data_list = [name[0].title() for name in result_bank]
+            data_list = [name[0].upper() for name in result_bank]
 
             return data_list
         except Exception:
