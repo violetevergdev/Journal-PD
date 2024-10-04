@@ -1,35 +1,48 @@
 import sqlite3
+import time
 from datetime import datetime
 
 from PyQt5.QtWidgets import QMessageBox
 
 from configuration.config import settings as conf
 
+
 class Database:
     def __init__(self, parent):
-        self.db = None
         self.parent = parent
-        self.conn = None
-        self.curs = None
 
-    def run_query(self, sql_query, logger, user, parameters=()):
-        try:
-            self.conn = sqlite3.connect(conf.db_path)
-            self.curs = self.conn.cursor()
-            result = self.curs.execute(sql_query, parameters)
-            self.conn.commit()
-            return result, self.curs
-        except Exception as e:
-            QMessageBox.critical(self.parent, "Ошибка ", "Ошибка при выполнении запроса: " + str(e), QMessageBox.Ok)
-
-            logger.error(
-                f'\n[ERR-QUERY] {str(datetime.today().strftime("%Y-%m-%d %H:%M:%S"))} - Ошибка при выполнении запроса, '
-                f'пользователь {user}, данные записи: {parameters}\nОШИБКА:{e}')
-            return None
+    def run_query(self, sql_query, logger, user, parameters=(), retries=3, wait_time=0.5):
+        attempt = 0
+        while attempt < retries:
+            try:
+                self.conn = sqlite3.connect(conf.db_path)
+                self.conn.execute('PRAGMA journal_mode=WAL')
+                self.curs = self.conn.cursor()
+                result = self.curs.execute(sql_query, parameters)
+                self.conn.commit()
+                return result, self.curs
+            except sqlite3.OperationalError as e:
+                if 'database is locked' in str(e):
+                    attempt += 1
+                    time.sleep(wait_time)
+                    if attempt == retries:
+                        QMessageBox.critical(self.parent, "Ошибка", "База данных заблокирована. Попробуйте позже.",
+                                             QMessageBox.Ok)
+                        logger.error(
+                            f'\n[ERR-QUERY] {str(datetime.today().strftime("%Y-%m-%d %H:%M:%S"))} - База данных заблокирована, '
+                            f'пользователь {user}, данные записи: {parameters}\nОШИБКА: {e}')
+                        return None
+                else:
+                    QMessageBox.critical(self.parent, "Ошибка ", "Ошибка при выполнении запроса: " + str(e),
+                                         QMessageBox.Ok)
+                    logger.error(
+                        f'\n[ERR-QUERY] {str(datetime.today().strftime("%Y-%m-%d %H:%M:%S"))} - Ошибка при выполнении запроса, '
+                        f'пользователь {user}, данные записи: {parameters}\nОШИБКА: {e}')
+                    return None
 
     def get_data_for_view(self, logger, user):
         try:
-            sql_query = 'SELECT * FROM pfr ORDER BY id DESC LIMIT 5000'
+            sql_query = 'SELECT * FROM pfr ORDER BY id DESC LIMIT 2000'
             result, cursor = self.run_query(sql_query, logger, user)
             if result is None:
                 return False
@@ -41,7 +54,6 @@ class Database:
         finally:
             if self.conn is not None:
                 self.conn.close()
-                self.conn = None
 
     def get_all_records(self, logger, user):
         try:
@@ -57,7 +69,6 @@ class Database:
         finally:
             if self.conn is not None:
                 self.conn.close()
-                self.conn = None
 
     def add_new_record(self, logger, user, record_values):
         try:
@@ -72,7 +83,6 @@ class Database:
         finally:
             if self.conn is not None:
                 self.conn.close()
-                self.conn = None
 
     def update_record(self, logger, user, record_values, id_el):
         try:
@@ -92,7 +102,6 @@ class Database:
         finally:
             if self.conn is not None:
                 self.conn.close()
-                self.conn = None
 
     def delete_record(self, logger, user, id_el):
         try:
@@ -107,7 +116,6 @@ class Database:
         finally:
             if self.conn is not None:
                 self.conn.close()
-                self.conn = None
 
     def get_banks(self, logger, user):
         try:
@@ -122,7 +130,6 @@ class Database:
         finally:
             if self.conn is not None:
                 self.conn.close()
-                self.conn = None
 
     def add_bank(self, logger, user, val):
         try:
@@ -137,7 +144,6 @@ class Database:
         finally:
             if self.conn is not None:
                 self.conn.close()
-                self.conn = None
 
     def find_records(self, logger, user, selected_column, value):
         try:
@@ -154,4 +160,3 @@ class Database:
         finally:
             if self.conn is not None:
                 self.conn.close()
-                self.conn = None

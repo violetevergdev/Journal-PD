@@ -76,7 +76,7 @@ class Journal(QMainWindow, Ui_MainWindow):
             QMessageBox.critical(self, 'Ошибка', 'Ошибка при прочтении базы данных')
 
     def open_new_record_window(self):
-        self.new_window = QtWidgets.QDialog()
+        self.new_window = QtWidgets.QDialog(self)
         self.ui_window = Ui_NewRecord(self.logger, self.user)
         self.ui_window.setupUi(self.new_window)
         self.new_window.show()
@@ -196,7 +196,7 @@ class Journal(QMainWindow, Ui_MainWindow):
                 QMessageBox.critical(self, 'Ошибка', 'Неправильный пароль')
 
     def open_find_window(self):
-        self.find_window = QtWidgets.QDialog()
+        self.find_window = QtWidgets.QDialog(self)
         self.ui_find_window = Ui_Find_MainWindow()
         self.ui_find_window.setupUi(self.find_window)
         self.find_window.show()
