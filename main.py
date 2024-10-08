@@ -1,3 +1,4 @@
+import gc
 import os
 import sys
 from datetime import datetime
@@ -32,6 +33,8 @@ class Journal(QMainWindow, Ui_MainWindow):
         self.ui.updateTableAction.triggered.connect(self.view_data)
         self.ui.findAction.triggered.connect(self.open_find_window)
 
+        self.model = None
+
         self.db = Database(self)
         self._CP = conf.CP
         self._UNLOADP = conf.UNP
@@ -43,6 +46,9 @@ class Journal(QMainWindow, Ui_MainWindow):
         self.ui.edit_btn.clicked.connect(self.edit_record)
 
     def view_data(self):
+        if self.model is not None:
+            self.model.clear()
+
         self.model = QStandardItemModel(self)
 
         query, cursor = self.db.get_data_for_view(self.logger, self.user)
@@ -76,7 +82,11 @@ class Journal(QMainWindow, Ui_MainWindow):
             QMessageBox.critical(self, 'Ошибка', 'Ошибка при прочтении базы данных')
 
     def open_new_record_window(self):
-        self.new_window = QtWidgets.QDialog(self)
+        if hasattr(self, 'new_window') and self.new_window is not None:
+            self.new_window.close()
+            self.new_window.deleteLater()
+
+        self.new_window = QtWidgets.QDialog()
         self.ui_window = Ui_NewRecord(self.logger, self.user)
         self.ui_window.setupUi(self.new_window)
         self.new_window.show()
@@ -104,6 +114,7 @@ class Journal(QMainWindow, Ui_MainWindow):
                     self.new_window.close()
                     QMessageBox.information(self, 'Успех', 'Запись была успешно изменена')
             self.view_data()
+            gc.collect()
         else:
             self.new_window.activateWindow()
 
@@ -190,13 +201,18 @@ class Journal(QMainWindow, Ui_MainWindow):
                             f'\n[UNLOAD] {str(datetime.today().strftime("%Y-%m-%d %H:%M:%S"))} - Таблица успешно '
                             f'выгружена пользователем {self.user}')
                         QMessageBox.information(None, "Выгрузка в XLSX", "Данные успешно выгружены")
+                        gc.collect()
                 except Exception as e:
                     print(e)
             else:
                 QMessageBox.critical(self, 'Ошибка', 'Неправильный пароль')
 
     def open_find_window(self):
-        self.find_window = QtWidgets.QDialog(self)
+        if hasattr(self, 'find_window') and self.find_window is not None:
+            self.find_window.close()
+            self.find_window.deleteLater()
+
+        self.find_window = QtWidgets.QDialog()
         self.ui_find_window = Ui_Find_MainWindow()
         self.ui_find_window.setupUi(self.find_window)
         self.find_window.show()
@@ -210,6 +226,9 @@ class Journal(QMainWindow, Ui_MainWindow):
         if selected_column:
             query, cursor = self.db.find_records(self.logger, self.user, selected_column, value)
 
+            if self.model is not None:
+                self.model.clear()
+
             self.model = QStandardItemModel(self)
 
             if query:
@@ -218,9 +237,19 @@ class Journal(QMainWindow, Ui_MainWindow):
                     items = [QStandardItem(str(field)) for field in row_data]
                     self.model.appendRow(items)
                 self.ui.table.setModel(self.model)
+                gc.collect()
             else:
                 QMessageBox.information(self, 'Записей нет', 'Запись не была найдена')
+                self.find_window.activateWindow()
 
+    def closeEvent(self, event):
+        if hasattr(self, 'find_window') and self.find_window is not None:
+            self.find_window.close()
+
+        if hasattr(self, 'new_window') and self.new_window is not None:
+            self.new_window.close()
+
+        super().closeEvent(event)
 
 
 if __name__ == '__main__':

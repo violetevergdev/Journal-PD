@@ -23,6 +23,7 @@ class Ui_Dialog(object):
     def __init__(self, logger, user):
         self.logger = logger
         self.user = user
+        self.model = None
 
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
@@ -40,11 +41,7 @@ class Ui_Dialog(object):
 
         # Заполянем лист данными из БД
         self.db = Database(self)
-
-        self.item_list = self.db.get_banks(self.logger, self.user)
-
-        self.model = QtCore.QStringListModel(self.item_list, self.banks_list)
-        self.banks_list.setModel(self.model)
+        self.load_banks()
 
         self.widget = QtWidgets.QWidget(Dialog)
         self.widget.setGeometry(QtCore.QRect(30, 20, 331, 32))
@@ -79,6 +76,13 @@ class Ui_Dialog(object):
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
+
+    def load_banks(self):
+        self.item_list = self.db.get_banks(self.logger, self.user)
+        if self.model is None:
+            self.model = QtCore.QStringListModel(self.banks_list)
+        self.model.setStringList(self.item_list)
+        self.banks_list.setModel(self.model)
 
     def filter_list(self):
         search_term = self.find.text().lower()
