@@ -1,7 +1,7 @@
 import gc
 import os
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta
 import ctypes
 
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -24,9 +24,11 @@ from modules.optionally.unload_XLSX_data import unload_XLSX_data
 
 from modules.optionally.logging_db import logging_db
 
+
 class Journal(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super(Journal, self).__init__()
+        self.vers = '1.2.0'
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.ui.unloadXLSXAction.triggered.connect(self.unload_XLSX_records)
@@ -36,8 +38,6 @@ class Journal(QMainWindow, Ui_MainWindow):
         self.model = None
 
         self.db = Database(self)
-        self._CP = conf.CP
-        self._UNLOADP = conf.UNP
         self.logger = logging_db()
         self.user = os.getlogin()
         self.view_data()
@@ -123,7 +123,8 @@ class Journal(QMainWindow, Ui_MainWindow):
         if row:
             password, ok = QInputDialog.getText(self, 'Подтверждение удаления', 'Введите пароль:')
             if ok:
-                if password == self._CP:
+                conf.reload()
+                if password == conf.CP:
                     id = str(self.ui.table.model().data(row[0]))
                     snils = str(self.ui.table.model().data(row[5]))
                     fio_pens = str(self.ui.table.model().data(row[6]))
@@ -192,16 +193,19 @@ class Journal(QMainWindow, Ui_MainWindow):
     def unload_XLSX_records(self):
         password, ok = QInputDialog.getText(self, 'Подтверждение прав', 'Введите пароль:')
         if ok:
-            if password == self._UNLOADP:
+            conf.reload()
+            if password == conf.UNP:
                 try:
                     data, cursor = self.db.get_all_records(self.logger, self.user)
                     if data:
-                        unload_XLSX_data(data, cursor)
-                        self.logger.info(
-                            f'\n[UNLOAD] {str(datetime.today().strftime("%Y-%m-%d %H:%M:%S"))} - Таблица успешно '
-                            f'выгружена пользователем {self.user}')
-                        QMessageBox.information(None, "Выгрузка в XLSX", "Данные успешно выгружены")
-                        gc.collect()
+                        if unload_XLSX_data(data, cursor):
+                            self.logger.info(
+                                f'\n[UNLOAD] {str(datetime.today().strftime("%Y-%m-%d %H:%M:%S"))} - Таблица успешно '
+                                f'выгружена пользователем {self.user}')
+                            QMessageBox.information(None, "Выгрузка в XLSX", "Данные успешно выгружены")
+                        else:
+                            QMessageBox.information(None, "Выгрузка в XLSX", "Отмена операции")
+                    gc.collect()
                 except Exception as e:
                     print(e)
             else:
@@ -252,9 +256,58 @@ class Journal(QMainWindow, Ui_MainWindow):
         super().closeEvent(event)
 
 
+class StateChecker(QThread):
+    notify_clean_up = pyqtSignal(str)
+    notify_drop_app = pyqtSignal(str)
+    notify_new_vers = pyqtSignal(str)
+
+    def __init__(self, main, conf, parent=None):
+        super().__init__(parent)
+        self.main = main
+        self.conf = conf
+        self.last_new_version_check = datetime.min
+        self.last_clean_up_check = datetime.min
+
+    def run(self):
+        while True:
+            self.conf.reload()
+
+            now = datetime.now()
+
+            if now - self.last_clean_up_check >= timedelta(seconds=conf.delay_clean_up_msg):
+                if conf.is_clean_up in ('True', 'true'):
+                    self.notify_clean_up.emit(conf.msg_clean_up)
+                self.last_clean_up_check = now
+
+            if conf.drop_it_all in ('True', 'true'):
+                self.notify_drop_app.emit("""<h2>ВНИМАНИЕ!</h2>\n<p style='font-size:14px;'>Через 10 секунд программа будет принудительно закрыта</p>""")
+                self.sleep(10)
+                sys.exit(app.exec_())
+
+            working_vers = conf.working_vers
+            if main.vers != working_vers:
+                self.notify_new_vers.emit(conf.msg_new_vers.format(str.center))
+
+            self.sleep(conf.common_delay)
+
+
+def handle(msg):
+    msg_box = QMessageBox()
+    msg_box.setIcon(QMessageBox.Warning)
+    msg_box.setWindowTitle('ВНИМАНИЕ!')
+    msg_box.setText(msg)
+    msg_box.setStandardButtons(QMessageBox.Ok)
+
+    msg_box.setWindowFlags(msg_box.windowFlags() | Qt.WindowStaysOnTopHint)
+    msg_box.activateWindow()
+    msg_box.raise_()
+    msg_box.exec_()
+
+
 if __name__ == '__main__':
     if conf.ENV_FOR_DYNACONF == 'prod':
         import pyi_splash
+
         pyi_splash.close()
 
     myappid = 'mycompany.myproduct.subproduct.version'
@@ -263,10 +316,22 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
 
     if conf.ENV_FOR_DYNACONF == 'prod':
-        db_path = os.path.join(sys._MEIPASS, 'icon.ico')
-        app.setWindowIcon(QIcon(db_path))
+        icon_path = os.path.join(sys._MEIPASS, 'icon.ico')
+        app.setWindowIcon(QIcon(icon_path))
 
-    main = Journal()
+    if conf.drop_it_all in ('True', 'true'):
+        QMessageBox.critical(None, 'Тех. Работы',
+                             """<p style='font-size:14px;'>Запрещено заходить в программу, выполняются технические работы, попробуйте позже</p>""")
+        sys.exit(app.exec_())
+    else:
+        main = Journal()
 
-    main.show()
+        checker_thread = StateChecker(main, conf)
+        checker_thread.notify_clean_up.connect(handle)
+        checker_thread.notify_drop_app.connect(handle)
+        checker_thread.notify_new_vers.connect(handle)
+        checker_thread.start()
+
+        main.show()
+
     sys.exit(app.exec_())

@@ -13,11 +13,14 @@ def unload_XLSX_data(data, cursor):
     # Запрашиваем выходной путь
     out_dir = str(QFileDialog.getExistingDirectory(None, "Выберите каталог"))
 
-    # Устанавливаем выходной путь
-    out = os.path.join(out_dir, f'Журнал ПД Выгрузка от {datetime.today().date()}.xlsx')
+    if out_dir:
+        # Устанавливаем выходной путь
+        out = os.path.join(out_dir, f'Журнал ПД Выгрузка от {datetime.today().date()}.xlsx')
 
-    # Записываем данные
-    writer = pd.ExcelWriter(out)
-    results.to_excel(writer, index=False)
+        # Записываем данные
+        writer = pd.ExcelWriter(out)
+        results.to_excel(writer, index=False)
 
-    writer.close()
+        writer.close()
+        return True
+

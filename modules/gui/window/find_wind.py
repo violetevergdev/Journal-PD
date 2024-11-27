@@ -98,20 +98,28 @@ class Ui_Find_MainWindow(object):
         self.pushButton.setText(_translate("Find_MainWindow", "Найти"))
         self.label.setText(_translate("Find_MainWindow", "Поиск"))
 
+        if self.comboBox.currentText() == "СНИЛС":
+            self.setMask()
+
+        self.comboBox.currentTextChanged.connect(self.on_combobox_changed)
+
+    def setMask(self):
+        self.lineEdit.setInputMask("XXX-XXX-XXX XX")
+        self.lineEdit.setText("___-___-___ __")
+        self.lineEdit.setCursorPosition(0)
+
+    def on_combobox_changed(self, text):
+        if text == "СНИЛС" or self.comboBox.currentText() == "СНИЛС":
+            self.setMask()
+        else:
+            self.lineEdit.setInputMask("")
+
     def showContextMenu(self, line_edit):
         menu = QMenu(line_edit)
         menu.addAction("Копировать").triggered.connect(line_edit.copy)
         menu.addAction("Вырезать").triggered.connect(line_edit.cut)
         menu.addAction("Вставить").triggered.connect(line_edit.paste)
         return menu
-
-
-
-
-
-
-
-
 
 if __name__ == "__main__":
     import sys
