@@ -15,6 +15,7 @@ class Database:
         attempt = 0
         while attempt < retries:
             try:
+                conf.reload()
                 self.conn = sqlite3.connect(conf.db_path)
                 self.conn.execute('PRAGMA journal_mode=WAL')
                 self.curs = self.conn.cursor()

@@ -36,6 +36,8 @@ class Ui_MainWindow(object):
         # Создаем Layout в котором будем позиционировать элементы
         layout = QtWidgets.QVBoxLayout(self.centralwidget)
 
+        horizontal_layout = QtWidgets.QHBoxLayout()
+
         self.main_label_journal = QtWidgets.QLabel(self.centralwidget)
         self.main_label_journal.setGeometry(QtCore.QRect(10, 0, 231, 41))
         font = QtGui.QFont()
@@ -44,8 +46,20 @@ class Ui_MainWindow(object):
         self.main_label_journal.setFont(font)
         self.main_label_journal.setObjectName("main_label_journal")
 
-        # Добавляем  лейбл в layout
-        layout.addWidget(self.main_label_journal)
+        self.main_label_vers = QtWidgets.QLabel(self.centralwidget)
+        self.main_label_vers.setGeometry(QtCore.QRect(1050, 0, 60, 41))
+        font = QtGui.QFont()
+        font.setFamily("Calibri")
+        font.setPointSize(16)
+        self.main_label_vers.setStyleSheet("color: gray;")
+        self.main_label_vers.setFont(font)
+        self.main_label_vers.setObjectName("main_label_vers")
+
+        horizontal_layout.addWidget(self.main_label_journal)
+        horizontal_layout.addStretch()
+        horizontal_layout.addWidget(self.main_label_vers, alignment=QtCore.Qt.AlignRight)
+
+        layout.addLayout(horizontal_layout)
 
         self.table = QtWidgets.QTableView(self.centralwidget)
         self.table.setGeometry(QtCore.QRect(10, 50, 1091, 601))
@@ -149,6 +163,7 @@ class Ui_MainWindow(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Журнал ПД"))
         self.main_label_journal.setText(_translate("MainWindow", "Журнал пенсионных дел"))
+        self.main_label_vers.setText(_translate("MainWindow", MainWindow.vers))
         self.add_btn.setText(_translate("MainWindow", "Добавить"))
         self.delete_btn.setText(_translate("MainWindow", "Удалить"))
         self.edit_btn.setText(_translate("MainWindow", "Изменить"))

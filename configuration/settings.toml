@@ -1,6 +1,24 @@
 [default]
 CP = '4525'
 UNP = '2322'
+working_vers = '1.2.0'
+
+common_delay = 300 # миллисекунды (5мин)
+delay_clean_up_msg = 3600 #  (1час)
+
+drop_it_all = 'False'
+is_clean_up = 'False'
+
+msg_new_vers = """
+<h2>ВНИМАНИЕ!<br>Вышла новая версия Журнала ПД</br></h2>
+<p style='font-size:16px'>Ярлык программы находится по следующему пути:</p>
+<p style='font-weight:bold;font-size:16px'>"W:/!!!УТИЛИТЫ/Журнал ПД/Журнал ПД.exe"</p>
+ """
+
+msg_clean_up = """
+<h2>ВНИМАНИЕ! ОЧИСТКА ЖУРНАЛА</h2>
+<p style='font-size:14px;'>Сегодня c <span style='font-weight:bold;'>13:00 до 13:45</span> будет производиться <span style='font-weight:bold;'>очистка журнала</span>, до этого времени всем <span style='font-weight:bold;'>руководителям</span> отделов необходимо <span style='font-weight:bold;'>выполнить выгрузку</span> и в указанное время всем пользователям необходимо <span style='font-weight:bold;'>закрыть программу</span></p>
+"""
 
 [dev]
 logger_path = 'db_log.txt'
