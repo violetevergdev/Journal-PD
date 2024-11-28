@@ -20,7 +20,7 @@ def get_env(name):
 env = get_env('ENV_FOR_DYNACONF')
 
 # Указываем пути конфиг. файлов в зависимости от значения env
-if env == 'prod':
+if env == 'arch':
     settings_files = ['W:\\!VIOLETTA!\\!fw!\\journal\\settings2.toml', 'W:\\!VIOLETTA!\\!fw!\\journal\\.secrets.toml']
 else:
     settings_files = ['./configuration/settings.toml', './configuration/.secrets.toml']

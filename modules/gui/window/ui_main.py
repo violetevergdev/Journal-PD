@@ -152,17 +152,21 @@ class Ui_MainWindow(object):
         self.findAction = QAction('&Поиск', MainWindow)
         self.findAction.setStatusTip('Поиск')
 
+        self.changeAction = QAction('&Сменить БД', MainWindow)
+        self.changeAction.setStatusTip('Сменить БД')
+
         self.menubar.addAction(self.unloadXLSXAction)
         self.menubar.addAction(self.updateTableAction)
         self.menubar.addAction(self.findAction)
+        self.menubar.addAction(self.changeAction)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Журнал ПД"))
-        self.main_label_journal.setText(_translate("MainWindow", "Журнал пенсионных дел"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "АРХИВ Журнала ПД"))
+        self.main_label_journal.setText(_translate("MainWindow", "Архив Журнала пенсионных дел"))
         self.main_label_vers.setText(_translate("MainWindow", MainWindow.vers))
         self.add_btn.setText(_translate("MainWindow", "Добавить"))
         self.delete_btn.setText(_translate("MainWindow", "Удалить"))

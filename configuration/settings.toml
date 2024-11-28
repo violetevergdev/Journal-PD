@@ -27,3 +27,9 @@ db_path = 'pfr.db'
 [prod]
 logger_path = 'W:\\!VIOLETTA!\\!fw!\\journal\\db_log.txt'
 db_path = 'W:\\!VIOLETTA!\\!fw!\\journal\\journal.db'
+
+[arch-dev]
+logger_path = 'db_logArch.txt'
+
+[arch]
+logger_path = 'W:\\!VIOLETTA!\\!fw!\\journal\\db_logArch.txt'

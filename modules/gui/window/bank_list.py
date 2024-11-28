@@ -20,9 +20,10 @@ from modules.db.db_connection import Database
 
 class Ui_Dialog(object):
 
-    def __init__(self, logger, user):
+    def __init__(self, logger, user, db_path):
         self.logger = logger
         self.user = user
+        self.db_path = db_path
         self.model = None
 
     def setupUi(self, Dialog):
@@ -78,7 +79,7 @@ class Ui_Dialog(object):
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
     def load_banks(self):
-        self.item_list = self.db.get_banks(self.logger, self.user)
+        self.item_list = self.db.get_banks(self.db_path, self.logger, self.user)
         if self.model is None:
             self.model = QtCore.QStringListModel(self.banks_list)
         self.model.setStringList(self.item_list)
@@ -98,10 +99,10 @@ class Ui_Dialog(object):
                 QMessageBox.critical(None, "Ошибка", 'Такой банк уже существует!')
                 return
 
-            if self.db.add_bank(self.logger, self.user, new_bank):
+            if self.db.add_bank(self.db_path, self.logger, self.user, new_bank):
                 self.logger.info(
                     f'\n[NEW_BANK] {str(datetime.today().strftime("%Y-%m-%d %H:%M:%S"))} - Банк {new_bank} успешно добавлен пользователем {self.user}')
-                self.item_list = self.db.get_banks(self.logger, self.user)
+                self.item_list = self.db.get_banks(self.db_path, self.logger, self.user)
                 self.model = QtCore.QStringListModel(self.item_list, self.banks_list)
                 self.banks_list.setModel(self.model)
             else:

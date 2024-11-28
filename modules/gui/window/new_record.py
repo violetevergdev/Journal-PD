@@ -20,9 +20,10 @@ from modules.optionally.delegates import TableItemDelegate
 
 
 class Ui_NewRecord(object):
-    def __init__(self, logger, user):
+    def __init__(self, logger, user, db_path):
         self.logger = logger
         self.user = user
+        self.db_path = db_path
     def setFocus(self):
         self.setFocus()
     def setupUi(self, NewRecord):
@@ -480,7 +481,7 @@ QLabel, QLineEdit, QPushButton, QToolButton, QDateEdit {
         QtCore.QMetaObject.connectSlotsByName(NewRecord)
 
     def open_bank_dialog(self):
-        self.bank_dialog = Ui_Dialog(self.logger, self.user)
+        self.bank_dialog = Ui_Dialog(self.db_path, self.logger, self.user)
         self.bank_window = QtWidgets.QDialog()
         self.bank_dialog.setupUi(self.bank_window)
         self.bank_window.show()

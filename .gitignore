@@ -7,3 +7,4 @@ configuration/.secrets.toml
 **/.idea/
 **/__pycache__/
 /clear-bg.png
+/db_logArch.txt

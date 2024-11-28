@@ -28,22 +28,37 @@ from modules.optionally.logging_db import logging_db
 class Journal(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super(Journal, self).__init__()
-        self.vers = '1.2.0'
+        self.vers = '0.1.0'
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.ui.unloadXLSXAction.triggered.connect(self.unload_XLSX_records)
         self.ui.updateTableAction.triggered.connect(self.view_data)
         self.ui.findAction.triggered.connect(self.open_find_window)
+        self.ui.changeAction.triggered.connect(self.arch_view)
 
         self.model = None
 
         self.db = Database(self)
         self.logger = logging_db()
         self.user = os.getlogin()
-        self.view_data()
+        self.db_path = None
+        self.arch_view()
         self.ui.add_btn.clicked.connect(self.open_new_record_window)
         self.ui.delete_btn.clicked.connect(self.delete_record)
         self.ui.edit_btn.clicked.connect(self.edit_record)
+
+    def select_archive_database(self):
+        db_path = str(QFileDialog.getOpenFileName(None, "Выберите базу данных", filter='*.db')).split(',')[
+                      0][2:-1]
+        if db_path:
+            return db_path
+        else:
+            QMessageBox.critical(self, "Ошибка", "Вы не выбрали файл")
+            sys.exit(1)
+
+    def arch_view(self):
+        self.db_path = self.select_archive_database()
+        self.view_data()
 
     def view_data(self):
         if self.model is not None:
@@ -51,7 +66,7 @@ class Journal(QMainWindow, Ui_MainWindow):
 
         self.model = QStandardItemModel(self)
 
-        query, cursor = self.db.get_data_for_view(self.logger, self.user)
+        query, cursor = self.db.get_data_for_view(self.db_path, self.logger, self.user)
 
         if query or query == []:
             self.model.setHorizontalHeaderLabels([col[0] for col in cursor.description])
@@ -87,7 +102,7 @@ class Journal(QMainWindow, Ui_MainWindow):
             self.new_window.deleteLater()
 
         self.new_window = QtWidgets.QDialog()
-        self.ui_window = Ui_NewRecord(self.logger, self.user)
+        self.ui_window = Ui_NewRecord(self.logger, self.user, self.db_path)
         self.ui_window.setupUi(self.new_window)
         self.new_window.show()
         sender = self.sender()
@@ -100,14 +115,14 @@ class Journal(QMainWindow, Ui_MainWindow):
 
         if validate_data(self, data):
             if type_operation == 'Добавить':
-                if self.db.add_new_record(self.logger, self.user, data):
+                if self.db.add_new_record(self.db_path, self.logger, self.user, data):
                     self.logger.info(
                         f'\n[ADD] {str(datetime.today().strftime("%Y-%m-%d %H:%M:%S"))} - Запись успешно добавлена '
                         f'пользователем {self.user}, данные записи: {data}')
                     clear_fields(self)
 
             if type_operation == 'Изменить':
-                if self.db.update_record(self.logger, self.user, data, self.edit_id):
+                if self.db.update_record(self.db_path, self.logger, self.user, data, self.edit_id):
                     self.logger.info(
                         f'\n[EDIT] {str(datetime.today().strftime("%Y-%m-%d %H:%M:%S"))} - Запись успешно изменена '
                         f'пользователем {self.user}, данные записи: {data}')
@@ -130,7 +145,7 @@ class Journal(QMainWindow, Ui_MainWindow):
                     fio_pens = str(self.ui.table.model().data(row[6]))
                     specialist = str(self.ui.table.model().data(row[15]))
 
-                    if self.db.delete_record(self.logger, self.user, id):
+                    if self.db.delete_record(self.db_path, self.logger, self.user, id):
                         self.logger.info(
                             f'\n[DELETE] {str(datetime.today().strftime("%Y-%m-%d %H:%M:%S"))} - Запись успешно удалена '
                             f'пользователем {self.user}, данные записи: СНИЛС - {snils}, '
@@ -191,25 +206,20 @@ class Journal(QMainWindow, Ui_MainWindow):
             QMessageBox.warning(self, "Внимание", "Выберите запись")
 
     def unload_XLSX_records(self):
-        password, ok = QInputDialog.getText(self, 'Подтверждение прав', 'Введите пароль:')
-        if ok:
-            conf.reload()
-            if password == conf.UNP:
-                try:
-                    data, cursor = self.db.get_all_records(self.logger, self.user)
-                    if data:
-                        if unload_XLSX_data(data, cursor):
-                            self.logger.info(
-                                f'\n[UNLOAD] {str(datetime.today().strftime("%Y-%m-%d %H:%M:%S"))} - Таблица успешно '
-                                f'выгружена пользователем {self.user}')
-                            QMessageBox.information(None, "Выгрузка в XLSX", "Данные успешно выгружены")
-                        else:
-                            QMessageBox.information(None, "Выгрузка в XLSX", "Отмена операции")
-                    gc.collect()
-                except Exception as e:
-                    print(e)
-            else:
-                QMessageBox.critical(self, 'Ошибка', 'Неправильный пароль')
+        conf.reload()
+        try:
+            data, cursor = self.db.get_all_records(self.db_path,self.logger, self.user)
+            if data:
+                if unload_XLSX_data(data, cursor):
+                    self.logger.info(
+                        f'\n[UNLOAD] {str(datetime.today().strftime("%Y-%m-%d %H:%M:%S"))} - Таблица успешно '
+                        f'выгружена пользователем {self.user}')
+                    QMessageBox.information(None, "Выгрузка в XLSX", "Данные успешно выгружены")
+                else:
+                    QMessageBox.information(None, "Выгрузка в XLSX", "Отмена операции")
+            gc.collect()
+        except Exception as e:
+            print(e)
 
     def open_find_window(self):
         if hasattr(self, 'find_window') and self.find_window is not None:
@@ -228,7 +238,7 @@ class Journal(QMainWindow, Ui_MainWindow):
         value = self.ui_find_window.lineEdit.text()
 
         if selected_column:
-            query, cursor = self.db.find_records(self.logger, self.user, selected_column, value)
+            query, cursor = self.db.find_records(self.db_path, self.logger, self.user, selected_column, value)
 
             if self.model is not None:
                 self.model.clear()
@@ -256,56 +266,8 @@ class Journal(QMainWindow, Ui_MainWindow):
         super().closeEvent(event)
 
 
-class StateChecker(QThread):
-    notify_clean_up = pyqtSignal(str)
-    notify_drop_app = pyqtSignal(str)
-    notify_new_vers = pyqtSignal(str)
-
-    def __init__(self, main, conf, parent=None):
-        super().__init__(parent)
-        self.main = main
-        self.conf = conf
-        self.last_new_version_check = datetime.min
-        self.last_clean_up_check = datetime.min
-
-    def run(self):
-        while True:
-            self.conf.reload()
-
-            now = datetime.now()
-
-            if now - self.last_clean_up_check >= timedelta(seconds=conf.delay_clean_up_msg):
-                if conf.is_clean_up in ('True', 'true'):
-                    self.notify_clean_up.emit(conf.msg_clean_up)
-                self.last_clean_up_check = now
-
-            if conf.drop_it_all in ('True', 'true'):
-                self.notify_drop_app.emit("""<h2>ВНИМАНИЕ!</h2>\n<p style='font-size:14px;'>Через 10 секунд программа будет принудительно закрыта</p>""")
-                self.sleep(10)
-                sys.exit(app.exec_())
-
-            working_vers = conf.working_vers
-            if main.vers != working_vers:
-                self.notify_new_vers.emit(conf.msg_new_vers.format(str.center))
-
-            self.sleep(conf.common_delay)
-
-
-def handle(msg):
-    msg_box = QMessageBox()
-    msg_box.setIcon(QMessageBox.Warning)
-    msg_box.setWindowTitle('ВНИМАНИЕ!')
-    msg_box.setText(msg)
-    msg_box.setStandardButtons(QMessageBox.Ok)
-
-    msg_box.setWindowFlags(msg_box.windowFlags() | Qt.WindowStaysOnTopHint)
-    msg_box.activateWindow()
-    msg_box.raise_()
-    msg_box.exec_()
-
-
 if __name__ == '__main__':
-    if conf.ENV_FOR_DYNACONF == 'prod':
+    if conf.ENV_FOR_DYNACONF == 'arch':
         import pyi_splash
 
         pyi_splash.close()
@@ -315,23 +277,11 @@ if __name__ == '__main__':
 
     app = QApplication(sys.argv)
 
-    if conf.ENV_FOR_DYNACONF == 'prod':
+    if conf.ENV_FOR_DYNACONF == 'arch':
         icon_path = os.path.join(sys._MEIPASS, 'icon.ico')
         app.setWindowIcon(QIcon(icon_path))
 
-    if conf.drop_it_all in ('True', 'true'):
-        QMessageBox.critical(None, 'Тех. Работы',
-                             """<p style='font-size:14px;'>Запрещено заходить в программу, выполняются технические работы, попробуйте позже</p>""")
-        sys.exit(app.exec_())
-    else:
-        main = Journal()
-
-        checker_thread = StateChecker(main, conf)
-        checker_thread.notify_clean_up.connect(handle)
-        checker_thread.notify_drop_app.connect(handle)
-        checker_thread.notify_new_vers.connect(handle)
-        checker_thread.start()
-
-        main.show()
+    main = Journal()
+    main.show()
 
     sys.exit(app.exec_())

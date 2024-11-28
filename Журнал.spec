@@ -35,7 +35,7 @@ exe = EXE(
     splash,
     splash.binaries,
     [('O', None, 'OPTION'), ('O', None, 'OPTION')],
-    name='Журнал ПД',
+    name='Архив Журнала ПД',
     debug=False,
     bootloader_ignore_signals=False,
     strip=True,

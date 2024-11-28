@@ -1,8 +1,9 @@
 import sqlite3
+import sys
 import time
 from datetime import datetime
 
-from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QMessageBox, QFileDialog
 
 from configuration.config import settings as conf
 
@@ -11,12 +12,11 @@ class Database:
     def __init__(self, parent):
         self.parent = parent
 
-    def run_query(self, sql_query, logger, user, parameters=(), retries=3, wait_time=0.5):
+    def run_query(self, db_path, sql_query, logger, user, parameters=(), retries=3, wait_time=0.5):
         attempt = 0
         while attempt < retries:
             try:
-                conf.reload()
-                self.conn = sqlite3.connect(conf.db_path)
+                self.conn = sqlite3.connect(db_path)
                 self.conn.execute('PRAGMA journal_mode=WAL')
                 self.curs = self.conn.cursor()
                 result = self.curs.execute(sql_query, parameters)
@@ -41,10 +41,10 @@ class Database:
                         f'пользователь {user}, данные записи: {parameters}\nОШИБКА: {e}')
                     return None
 
-    def get_data_for_view(self, logger, user):
+    def get_data_for_view(self, db_path, logger, user):
         try:
             sql_query = 'SELECT * FROM pfr ORDER BY id DESC LIMIT 2000'
-            result, cursor = self.run_query(sql_query, logger, user)
+            result, cursor = self.run_query(db_path, sql_query, logger, user)
             if result is None:
                 return False
             else:
@@ -56,10 +56,10 @@ class Database:
             if self.conn is not None:
                 self.conn.close()
 
-    def get_all_records(self, logger, user):
+    def get_all_records(self, db_path, logger, user):
         try:
             sql_query = 'SELECT * FROM pfr'
-            result, cursor = self.run_query(sql_query, logger, user)
+            result, cursor = self.run_query(db_path, sql_query, logger, user)
             if result is None:
                 return False
             else:
@@ -71,10 +71,10 @@ class Database:
             if self.conn is not None:
                 self.conn.close()
 
-    def add_new_record(self, logger, user, record_values):
+    def add_new_record(self, db_path, logger, user, record_values):
         try:
             sql_query = "INSERT INTO pfr VALUES(NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-            result, _ = self.run_query(sql_query, logger, user, record_values)
+            result, _ = self.run_query(db_path, sql_query, logger, user, record_values)
             if result is None:
                 return False
             else:
@@ -85,7 +85,7 @@ class Database:
             if self.conn is not None:
                 self.conn.close()
 
-    def update_record(self, logger, user, record_values, id_el):
+    def update_record(self, db_path, logger, user, record_values, id_el):
         try:
             sql_query = f'''UPDATE pfr SET 'Очередность выплаты' = ?, 'Выплатной месяц' = ?, '№ Филиала' = ?,
                          Район = ?, СНИЛС = ?, 'ФИО Пенсионера' = ?, Операция = ?, 'УСТ Размер пенсии' = ?,
@@ -93,7 +93,7 @@ class Database:
                         'Доплата ДМО' = ?, 'Доставочная организация' = ?, 'Специалист ОВ' = ?, Примечание = ?, 'Дата отработки' = ?
                         WHERE id = {id_el}'''
 
-            result, _ = self.run_query(sql_query, logger, user, record_values)
+            result, _ = self.run_query(db_path, sql_query, logger, user, record_values)
             if result is None:
                 return False
             else:
@@ -104,10 +104,10 @@ class Database:
             if self.conn is not None:
                 self.conn.close()
 
-    def delete_record(self, logger, user, id_el):
+    def delete_record(self, db_path, logger, user, id_el):
         try:
             sql_query = 'DELETE FROM pfr WHERE id = ?'
-            result, _ = self.run_query(sql_query, logger, user, (id_el,))
+            result, _ = self.run_query(db_path, sql_query, logger, user, (id_el,))
             if result is None:
                 return False
             else:
@@ -118,10 +118,10 @@ class Database:
             if self.conn is not None:
                 self.conn.close()
 
-    def get_banks(self, logger, user):
+    def get_banks(self, db_path, logger, user):
         try:
             query_bank = 'SELECT * FROM banks'
-            result_bank, _ = self.run_query(query_bank, logger, user)
+            result_bank, _ = self.run_query(db_path, query_bank, logger, user)
 
             data_list = [name[0].upper() for name in result_bank]
 
@@ -132,10 +132,10 @@ class Database:
             if self.conn is not None:
                 self.conn.close()
 
-    def add_bank(self, logger, user, val):
+    def add_bank(self, db_path, logger, user, val):
         try:
             sql_query = 'INSERT INTO banks VALUES (?)'
-            result, _ = self.run_query(sql_query, logger, user, (val,))
+            result, _ = self.run_query(db_path, sql_query, logger, user, (val,))
             if result is None:
                 return False
             else:
@@ -146,10 +146,10 @@ class Database:
             if self.conn is not None:
                 self.conn.close()
 
-    def find_records(self, logger, user, selected_column, value):
+    def find_records(self, db_path, logger, user, selected_column, value):
         try:
             sql_query = f"SELECT * FROM pfr WHERE \"{selected_column}\" LIKE '%{value}%'"
-            query, cursor = self.run_query(sql_query, logger, user)
+            query, cursor = self.run_query(db_path, sql_query, logger, user)
 
             if query is None:
                 return False
