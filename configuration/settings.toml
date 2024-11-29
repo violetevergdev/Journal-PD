@@ -27,3 +27,7 @@ db_path = 'pfr.db'
 [prod]
 logger_path = 'W:\\!VIOLETTA!\\!fw!\\journal\\db_log.txt'
 db_path = 'W:\\!VIOLETTA!\\!fw!\\journal\\journal.db'
+
+[test]
+logger_path = 'db_Testlog.txt'
+db_path = 'test_db.db'

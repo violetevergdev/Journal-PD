@@ -1,10 +1,12 @@
 import sqlite3
+import threading
 import time
 from datetime import datetime
 
 from PyQt5.QtWidgets import QMessageBox
 
 from configuration.config import settings as conf
+from optionally.logging_db import logging_db
 
 
 class Database:
@@ -16,12 +18,12 @@ class Database:
         while attempt < retries:
             try:
                 conf.reload()
-                self.conn = sqlite3.connect(conf.db_path)
-                self.conn.execute('PRAGMA journal_mode=WAL')
-                self.curs = self.conn.cursor()
-                result = self.curs.execute(sql_query, parameters)
-                self.conn.commit()
-                return result, self.curs
+                with sqlite3.connect(conf.db_path) as conn:
+                    conn.execute('PRAGMA journal_mode=WAL')
+                    curs = conn.cursor()
+                    result = curs.execute(sql_query, parameters)
+                    conn.commit()
+                    return result, curs
             except sqlite3.OperationalError as e:
                 if 'database is locked' in str(e):
                     attempt += 1
@@ -52,9 +54,7 @@ class Database:
                 return data_list, cursor
         except Exception:
             return False
-        finally:
-            if self.conn is not None:
-                self.conn.close()
+
 
     def get_all_records(self, logger, user):
         try:
@@ -67,9 +67,7 @@ class Database:
                 return data_list, cursor
         except Exception:
             return False
-        finally:
-            if self.conn is not None:
-                self.conn.close()
+
 
     def add_new_record(self, logger, user, record_values):
         try:
@@ -81,9 +79,7 @@ class Database:
                 return True
         except Exception:
             return False
-        finally:
-            if self.conn is not None:
-                self.conn.close()
+
 
     def update_record(self, logger, user, record_values, id_el):
         try:
@@ -100,9 +96,7 @@ class Database:
                 return True
         except Exception:
             return False
-        finally:
-            if self.conn is not None:
-                self.conn.close()
+
 
     def delete_record(self, logger, user, id_el):
         try:
@@ -114,9 +108,7 @@ class Database:
                 return True
         except Exception:
             return False
-        finally:
-            if self.conn is not None:
-                self.conn.close()
+
 
     def get_banks(self, logger, user):
         try:
@@ -128,9 +120,7 @@ class Database:
             return data_list
         except Exception:
             return False
-        finally:
-            if self.conn is not None:
-                self.conn.close()
+
 
     def add_bank(self, logger, user, val):
         try:
@@ -142,9 +132,7 @@ class Database:
                 return True
         except Exception:
             return False
-        finally:
-            if self.conn is not None:
-                self.conn.close()
+
 
     def find_records(self, logger, user, selected_column, value):
         try:
@@ -158,6 +146,3 @@ class Database:
                 return data_list, cursor
         except Exception:
             return False
-        finally:
-            if self.conn is not None:
-                self.conn.close()
