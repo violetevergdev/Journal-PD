@@ -1,9 +1,15 @@
 import re
+
+import pytest
+from contextlib import nullcontext as does_not_raise
 from PyQt5.QtWidgets import QMessageBox
 
 
 def show_error(self, message):
-    QMessageBox.critical(self, "Ошибка ", message, QMessageBox.Ok)
+    if self is not None:
+        QMessageBox.critical(self, "Ошибка ", message, QMessageBox.Ok)
+    else:
+        pass
 
 
 def validate_data(self, data_entrys):
@@ -46,8 +52,9 @@ def validate_data(self, data_entrys):
                                 formatted_initials += char + "."
 
                         formatted_fio = f"{surname} {formatted_initials}"
-                        self.ui_window.fio_pens.setText("")
-                        self.ui_window.fio_pens.setText(formatted_fio)
+                        if self is not None:
+                            self.ui_window.fio_pens.setText("")
+                            self.ui_window.fio_pens.setText(formatted_fio)
                         data_entrys[5] = formatted_fio
 
 
@@ -56,3 +63,21 @@ def validate_data(self, data_entrys):
                     return False
 
     return True
+
+
+@pytest.mark.parametrize(
+    'data_entrys, expected',
+    [
+        (['Разовая 1', 'Апрель', 'Ф-л 3', '556', '464-646-575 47', 'Петров АА', 'Постановка', '666', '', '', '', '', '', 'АО "ГУТА-БАНК"', 'тест', '', '04.12.2024'], True),
+        (['Разовая 1', 'Апрель', 'Ф-л 3', '', '464-646-575 47', 'Петров АА', 'Постановка', '666', '', '', '', '', '', 'АО "ГУТА-БАНК"', 'тест', '', '04.12.2024'], False),
+        (['Разовая 1', 'Апрель', 'Ф-л 3', '23', '64-646-575 47', 'Петров АА', 'Постановка', '666', '', '', '', '', '', 'АО "ГУТА-БАНК"', 'тест', '', '04.12.2024'], False),
+        (['Разовая 1', 'Апрель', 'Ф-л 3', '23', '___-___-___ __', 'Петров АА', 'Постановка', '666', '', '', '', '', '', 'АО "ГУТА-БАНК"', 'тест', '', '04.12.2024'], False),
+        (['Разовая 1', 'Апрель', 'Ф-л 3', '23', '464-646-575 47', 'Петров аа', 'Постановка', '666', '', '', '', '', '', 'АО "ГУТА-БАНК"', 'тест', '', '04.12.2024'], False),
+        (['Разовая 1', 'Апрель', 'Ф-л 3', '23', '464-646-575 47', 'Петров АА', 'Постановка', '', '', '', '', '', '', 'АО "ГУТА-БАНК"', 'тест', '', '04.12.2024'], False),
+        (['Разовая 1', 'Апрель', 'Ф-л 3', '23', '464-646-575 47', 'Петров АА', 'Постановка', '', '', '22', '', '', '', 'АО "ГУТА-БАНК"', 'тест', '', '04.12.2024'], True),
+
+    ]
+)
+def test_validate_data(data_entrys, expected):
+    res = validate_data(None, data_entrys)
+    assert res == expected
