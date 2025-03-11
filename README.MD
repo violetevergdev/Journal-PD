@@ -3,7 +3,7 @@
 
 Программа для ведения журнала пенсионнных дел
 
-<img src="https://img.shields.io/badge/Version-1.2.1-red" alt="Version">
+<img src="https://img.shields.io/badge/Version-1.2.2-red" alt="Version">
 <img src="https://img.shields.io/badge/License-MIT-brightgreen" alt="License">
 
 

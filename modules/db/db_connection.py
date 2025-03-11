@@ -6,7 +6,7 @@ from datetime import datetime
 from PyQt5.QtWidgets import QMessageBox
 
 from configuration.config import settings as conf
-from optionally.logging_db import logging_db
+from modules.optionally.logging_db import logging_db
 
 
 class Database:

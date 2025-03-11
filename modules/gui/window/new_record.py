@@ -248,7 +248,8 @@ QLabel, QLineEdit, QPushButton, QToolButton, QDateEdit {
 "QPushButton:pressed {\n"
 "    border: 1px solid white;\n"
 "    background-color: rgba(255, 255, 255, 50)\n"
-"}")
+"}\n"
+"QComboBox: {\ncombobox-popup: 0;}")
         self.pushButton.setObjectName("pushButton")
         self.layoutWidget = QtWidgets.QWidget(self.main_frame)
         self.layoutWidget.setGeometry(QtCore.QRect(10, 12, 433, 387))
@@ -264,17 +265,12 @@ QLabel, QLineEdit, QPushButton, QToolButton, QDateEdit {
         self.priority.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.priority.setAutoFillBackground(False)
         self.priority.setStyleSheet("")
-        self.priority.setMaxVisibleItems(103453556)
+        self.priority.setMaxVisibleItems(6)
         self.priority.setFrame(True)
         self.priority.setObjectName("priority")
-        self.priority.addItem("")
-        self.priority.addItem("")
-        self.priority.addItem("")
-        self.priority.addItem("")
-        self.priority.addItem("")
-        self.priority.addItem("")
-        self.priority.addItem("")
-        self.priority.addItem("")
+        for i in range(1, 33):
+                self.priority.addItem("")
+
         self.main_grid.addWidget(self.priority, 0, 2, 1, 1)
         self.L_month = QtWidgets.QLabel(self.layoutWidget)
         self.L_month.setStyleSheet("border:none")
@@ -512,12 +508,9 @@ QLabel, QLineEdit, QPushButton, QToolButton, QDateEdit {
         self.priority.setCurrentText(_translate("NewRecord", "Основная"))
         self.priority.setItemText(0, _translate("NewRecord", "Основная"))
         self.priority.setItemText(1, _translate("NewRecord", "Доп. 1"))
-        self.priority.setItemText(2, _translate("NewRecord", "Разовая 1"))
-        self.priority.setItemText(3, _translate("NewRecord", "Разовая 2"))
-        self.priority.setItemText(4, _translate("NewRecord", "Разовая 3"))
-        self.priority.setItemText(5, _translate("NewRecord", "Разовая 4"))
-        self.priority.setItemText(6, _translate("NewRecord", "Разовая 5"))
-        self.priority.setItemText(7, _translate("NewRecord", "Разовая 6"))
+        for i in range(1, 31):
+                self.priority.setItemText(i+1, _translate("NewRecord", f"Разовая {i}"))
+
         self.L_month.setText(_translate("NewRecord", "*Выплатной месяц:"))
         self.month.setCurrentText(_translate("NewRecord", "Январь"))
         self.month.setItemText(0, _translate("NewRecord", "Январь"))

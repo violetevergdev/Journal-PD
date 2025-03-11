@@ -28,7 +28,7 @@ from modules.optionally.logging_db import logging_db
 class Journal(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super(Journal, self).__init__()
-        self.vers = '1.2.0'
+        self.vers = '1.2.2'
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.ui.unloadXLSXAction.triggered.connect(self.unload_XLSX_records)
