@@ -20,7 +20,9 @@ class Database:
                 conf.reload()
                 with sqlite3.connect(conf.db_path) as conn:
                     conn.execute('PRAGMA journal_mode=WAL')
+                    conn.execute('PRAGMA synchronous=NORMAL')
                     curs = conn.cursor()
+                    conn.execute('BEGIN IMMEDIATE')
                     result = curs.execute(sql_query, parameters)
                     conn.commit()
                     return result, curs
@@ -72,11 +74,11 @@ class Database:
     def add_new_record(self, logger, user, record_values):
         try:
             sql_query = "INSERT INTO pfr VALUES(NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-            result, _ = self.run_query(sql_query, logger, user, record_values)
+            result, curs = self.run_query(sql_query, logger, user, record_values)
             if result is None:
                 return False
             else:
-                return True
+                return curs.lastrowid
         except Exception:
             return False
 
@@ -89,11 +91,11 @@ class Database:
                         'Доплата ДМО' = ?, 'Доставочная организация' = ?, 'Специалист ОВ' = ?, Примечание = ?, 'Дата отработки' = ?
                         WHERE id = {id_el}'''
 
-            result, _ = self.run_query(sql_query, logger, user, record_values)
+            result, curs = self.run_query(sql_query, logger, user, record_values)
             if result is None:
                 return False
             else:
-                return True
+                return curs.rowcount
         except Exception:
             return False
 
@@ -101,11 +103,11 @@ class Database:
     def delete_record(self, logger, user, id_el):
         try:
             sql_query = 'DELETE FROM pfr WHERE id = ?'
-            result, _ = self.run_query(sql_query, logger, user, (id_el,))
+            result, curs = self.run_query(sql_query, logger, user, (id_el,))
             if result is None:
                 return False
             else:
-                return True
+                return curs.rowcount
         except Exception:
             return False
 

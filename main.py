@@ -28,7 +28,7 @@ from modules.optionally.logging_db import logging_db
 class Journal(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super(Journal, self).__init__()
-        self.vers = '1.2.2'
+        self.vers = '1.2.3'
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.ui.unloadXLSXAction.triggered.connect(self.unload_XLSX_records)
@@ -100,19 +100,25 @@ class Journal(QMainWindow, Ui_MainWindow):
 
         if validate_data(self, data):
             if type_operation == 'Добавить':
-                if self.db.add_new_record(self.logger, self.user, data):
+                new_id = self.db.add_new_record(self.logger, self.user, data)
+                if new_id is not None:
                     self.logger.info(
                         f'\n[ADD] {str(datetime.today().strftime("%Y-%m-%d %H:%M:%S"))} - Запись успешно добавлена '
                         f'пользователем {self.user}, данные записи: {data}')
                     clear_fields(self)
+                else:
+                    QMessageBox.warning(self, 'Ошибка', "Запись не была добавлена, попробуйте еще раз")
 
             if type_operation == 'Изменить':
-                if self.db.update_record(self.logger, self.user, data, self.edit_id):
+                updates_rows =  self.db.update_record(self.logger, self.user, data, self.edit_id)
+                if updates_rows == 1:
                     self.logger.info(
                         f'\n[EDIT] {str(datetime.today().strftime("%Y-%m-%d %H:%M:%S"))} - Запись успешно изменена '
                         f'пользователем {self.user}, данные записи: {data}')
                     self.new_window.close()
                     QMessageBox.information(self, 'Успех', 'Запись была успешно изменена')
+                elif updates_rows == 0:
+                    QMessageBox.warning(self, 'Ошибка', 'Ошибка изменени записи, попробуйте еще раз')
             self.view_data()
             gc.collect()
         else:
@@ -130,13 +136,17 @@ class Journal(QMainWindow, Ui_MainWindow):
                     fio_pens = str(self.ui.table.model().data(row[6]))
                     specialist = str(self.ui.table.model().data(row[15]))
 
-                    if self.db.delete_record(self.logger, self.user, id):
+                    deleted_rows =  self.db.delete_record(self.logger, self.user, id)
+                    if deleted_rows == 1:
                         self.logger.info(
                             f'\n[DELETE] {str(datetime.today().strftime("%Y-%m-%d %H:%M:%S"))} - Запись успешно удалена '
                             f'пользователем {self.user}, данные записи: СНИЛС - {snils}, '
                             f'ФИО Пенсионера - {fio_pens}, Специалист - {specialist}')
                         self.view_data()
                         QMessageBox.information(self, 'Успех', 'Запись была успешно удалена')
+                    elif deleted_rows == 0:
+                        QMessageBox.warning(self, 'Ошибка', 'Ошибка удаления записи, попробуйте еще раз')
+
                 else:
                     QMessageBox.critical(self, 'Ошибка', 'Неправильный пароль')
         else:

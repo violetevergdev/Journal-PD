@@ -1,7 +1,7 @@
 [default]
 CP = '4525'
 UNP = '2322'
-working_vers = '1.2.0'
+working_vers = '1.2.3'
 
 common_delay = 300 # миллисекунды (5мин)
 delay_clean_up_msg = 3600 #  (1час)
