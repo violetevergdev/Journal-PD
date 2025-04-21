@@ -1,7 +1,7 @@
 [default]
 CP = '4525'
 UNP = '2322'
-working_vers = '1.2.3'
+working_vers = '1.2.4_1'
 
 common_delay = 300 # миллисекунды (5мин)
 delay_clean_up_msg = 3600 #  (1час)
@@ -12,7 +12,7 @@ is_clean_up = 'False'
 msg_new_vers = """
 <h2>ВНИМАНИЕ!<br>Вышла новая версия Журнала ПД</br></h2>
 <p style='font-size:16px'>Ярлык программы находится по следующему пути:</p>
-<p style='font-weight:bold;font-size:16px'>"W:/!!!УТИЛИТЫ/Журнал ПД/v1.2.2/Журнал ПД.exe"</p>
+<p style='font-weight:bold;font-size:16px'>"W:/!!!УТИЛИТЫ/Журнал ПД/v1.2.4_1/Журнал ПД.exe"</p>
  """
 
 msg_clean_up = """

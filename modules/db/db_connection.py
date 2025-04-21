@@ -77,8 +77,10 @@ class Database:
             result, curs = self.run_query(sql_query, logger, user, record_values)
             if result is None:
                 return False
-            else:
+            if curs.connection.total_changes > 0:
                 return curs.lastrowid
+            else:
+                return False
         except Exception:
             return False
 
@@ -94,8 +96,10 @@ class Database:
             result, curs = self.run_query(sql_query, logger, user, record_values)
             if result is None:
                 return False
-            else:
+            if curs.connection.total_changes > 0:
                 return curs.rowcount
+            else:
+                return False
         except Exception:
             return False
 
@@ -106,8 +110,10 @@ class Database:
             result, curs = self.run_query(sql_query, logger, user, (id_el,))
             if result is None:
                 return False
-            else:
+            if curs.connection.total_changes > 0:
                 return curs.rowcount
+            else:
+                return False
         except Exception:
             return False
 
